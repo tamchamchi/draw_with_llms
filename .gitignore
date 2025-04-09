@@ -1,0 +1,33 @@
+# Ignore data directory
+/data/
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore environment files and folders
+.env
+.venv/
+env/
+venv/
+
+# Ignore model weights and checkpoints
+*.pt
+*.pth
+
+# Ignore output and log directories
+logs/
+output/
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore build artifacts
+build/
+dist/
+*.egg-info/
+
+# Ignore evaluation scripts or data from Kaggle
+src/kaggle_evaluation/
