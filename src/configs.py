@@ -1,17 +1,16 @@
-from pathlib import Path
 import os
+from pathlib import Path
 
 PROJ_DIR = Path(__file__).parents[1]
 
-MODEL_DIR = os.path.join(PROJ_DIR, 'models')
+MODEL_DIR = os.path.join(PROJ_DIR, "models")
 
-DATA_DIR = os.path.join(PROJ_DIR, 'data')
-RAW_DATA_DIR = os.path.join(DATA_DIR, 'raw')
-PROCESSED_DATA_DIR = os.path.join(DATA_DIR, 'processed')
-INTERNAL_DATA_DIR = os.path.join(DATA_DIR, 'internal')
-RESULTS_DIR = os.path.join(DATA_DIR, 'results')
-REPORT_DIR = os.path.join(PROJ_DIR, 'report')
-
+DATA_DIR = os.path.join(PROJ_DIR, "data")
+RAW_DATA_DIR = os.path.join(DATA_DIR, "raw")
+PROCESSED_DATA_DIR = os.path.join(DATA_DIR, "processed")
+INTERNAL_DATA_DIR = os.path.join(DATA_DIR, "internal")
+RESULTS_DIR = os.path.join(DATA_DIR, "results")
+REPORT_DIR = os.path.join(PROJ_DIR, "report")
 
 
 # print(f"Project Dir: {PROJ_DIR}")

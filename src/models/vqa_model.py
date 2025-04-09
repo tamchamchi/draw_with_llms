@@ -4,8 +4,6 @@ from dotenv import load_dotenv
 from more_itertools import chunked
 import statistics
 import torch
-import torch.nn as nn
-import clip
 import math
 from PIL import Image
 from transformers import (
@@ -20,13 +18,14 @@ load_dotenv()
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 login(token=HUGGINGFACE_API_KEY)
 
+
 class VQAEvaluator:
     """Evaluates images based on their similarity to a given text description using multiple choice questions."""
 
     def __init__(self):
         self.quantization_config = BitsAndBytesConfig(
             load_in_4bit=True,
-            bnb_4bit_quant_type='nf4',
+            bnb_4bit_quant_type="nf4",
             bnb_4bit_use_double_quant=True,
             bnb_4bit_compute_dtype=torch.float16,
         )
@@ -101,15 +100,15 @@ class VQAEvaluator:
         return scores
 
     def format_prompt(self, question: str, choices: list[str]) -> str:
-        prompt = f'<image>answer en Question: {question}\nChoices:\n'
+        prompt = f"<image>answer en Question: {question}\nChoices:\n"
         for i, choice in enumerate(choices):
-            prompt += f'{self.letters[i]}. {choice}\n'
+            prompt += f"{self.letters[i]}. {choice}\n"
         return prompt
 
     def mask_choices(self, logits, choices_list):
-        """Masks logits for the first token of each choice letter for each question in the batch.""" 
+        """Masks logits for the first token of each choice letter for each question in the batch."""
         batch_size = logits.shape[0]
-        masked_logits = torch.full_like(logits, float('-inf'))
+        masked_logits = torch.full_like(logits, float("-inf"))
 
         for batch_idx in range(batch_size):
             choices = choices_list[batch_idx]
@@ -120,13 +119,17 @@ class VQAEvaluator:
                     letter_token, add_special_tokens=False
                 )[0]
                 first_token_with_space = self.processor.tokenizer.encode(
-                    ' ' + letter_token, add_special_tokens=False
+                    " " + letter_token, add_special_tokens=False
                 )[0]
 
                 if isinstance(first_token, int):
-                    masked_logits[batch_idx, first_token] = logits[batch_idx, first_token]
+                    masked_logits[batch_idx, first_token] = logits[
+                        batch_idx, first_token
+                    ]
                 if isinstance(first_token_with_space, int):
-                    masked_logits[batch_idx, first_token_with_space] = logits[batch_idx, first_token_with_space]
+                    masked_logits[batch_idx, first_token_with_space] = logits[
+                        batch_idx, first_token_with_space
+                    ]
 
         return masked_logits
 
@@ -134,8 +137,8 @@ class VQAEvaluator:
         inputs = self.processor(
             images=[image] * len(prompts),
             text=prompts,
-            return_tensors='pt',
-            padding='longest',
+            return_tensors="pt",
+            padding="longest",
         ).to(self.device)
 
         with torch.no_grad():
@@ -154,7 +157,7 @@ class VQAEvaluator:
                     letter_token, add_special_tokens=False
                 )[0]
                 first_token_with_space = self.processor.tokenizer.encode(
-                    ' ' + letter_token, add_special_tokens=False
+                    " " + letter_token, add_special_tokens=False
                 )[0]
 
                 prob = 0.0
@@ -182,14 +185,14 @@ class VQAEvaluator:
     def ocr(self, image, free_chars=4, use_num_char=False):
         inputs = (
             self.processor(
-                text='<image>ocr\n',
+                text="<image>ocr\n",
                 images=image,
-                return_tensors='pt',
+                return_tensors="pt",
             )
             .to(torch.float16)
             .to(self.model.device)
         )
-        input_len = inputs['input_ids'].shape[-1]
+        input_len = inputs["input_ids"].shape[-1]
 
         with torch.inference_mode():
             outputs = self.model.generate(**inputs, max_new_tokens=32, do_sample=False)
@@ -199,5 +202,7 @@ class VQAEvaluator:
         num_char = len(decoded)
 
         # Exponentially decreasing towards 0.0 if more than free_chars detected
-        #---------------Modified Output----------------------
-        return min(1.0, math.exp(-num_char + free_chars)) if use_num_char else min(1.0, math.exp(-num_char + free_chars)), num_char
+        # ---------------Modified Output----------------------
+        return min(1.0, math.exp(-num_char + free_chars)) if use_num_char else min(
+            1.0, math.exp(-num_char + free_chars)
+        ), num_char
