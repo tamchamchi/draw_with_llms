@@ -10,8 +10,8 @@ import pandas as pd
 
 from src.features.build_image_processor import ImageProcessor, svg_to_png
 from src.kaggle_evaluation import svg_constraints
-from src.models.aesthetic_model import AestheticEvaluator
-from src.models.vqa_model import VQAEvaluator
+
+from src.models.global_models import vqa_evaluator, aesthetic_evaluator
 
 
 class ParticipantVisibleError(Exception):
@@ -80,10 +80,10 @@ def score(
             constraints.validate_svg(svg)
     except:
         raise ParticipantVisibleError("SVG code violates constraints.")
-    
+
     # Score
-    vqa_evaluator = VQAEvaluator()
-    aesthetic_evaluator = AestheticEvaluator()
+    # vqa_evaluator = VQAEvaluator()
+    # aesthetic_evaluator = AestheticEvaluator()
 
     results = []
     rng = np.random.RandomState(random_seed)

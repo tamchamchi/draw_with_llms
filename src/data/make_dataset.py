@@ -62,6 +62,23 @@ class Data:
              pd.DataFrame: The merged dataset.
         """
         return self.data
+    
+    def get_description_by_id(self, idx: str) -> str:
+        """
+        Returns the description corresponding to a specific ID from the training dataset.
+
+        Parameters:
+            idx (str): The ID of the data entry to retrieve the description for.
+
+        Returns:
+            str: The description of the entry with the given ID. 
+                Returns an empty string if the ID is not found.
+        """
+        matched_rows = self.train_data[self.train_data["id"] == idx]
+        if not matched_rows.empty:
+            return matched_rows["description"].values[0]
+        return ""
+        
 
     def get_solution(self, idx: str) -> pd.DataFrame:
         """

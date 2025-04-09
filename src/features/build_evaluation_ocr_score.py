@@ -1,16 +1,18 @@
+import json
 import os
 import sys
+
 import numpy as np
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from src.models.vqa_model import VQAEvaluator
-from src.models.stable_diffusion_v2 import StableDiffusionV2
-from src.data.make_dataset import Data
-from build_png2svg import bitmap_to_svg_layered
 from build_image_processor import ImageProcessor, svg_to_png
-from src.configs import RAW_DATA_DIR, RESULTS_DIR
+from build_png2svg import bitmap_to_svg_layered
 
+from src.configs import RAW_DATA_DIR, RESULTS_DIR
+from src.data.make_dataset import Data
+from src.models.stable_diffusion_v2 import StableDiffusionV2
+from src.models.vqa_model import VQAEvaluator
 
 TRAIN_DATA_PATH = os.path.join(RAW_DATA_DIR, "drawing-with-llms/train.csv")
 QUESTION_DATA_PATH = os.path.join(RAW_DATA_DIR, "drawing-with-llms/questions.parquet")
@@ -35,20 +37,16 @@ def evaluation_ocr_score():
 
     for row in train_data.itertuples(index=False):
         prompt = f"{PREFIX_PROMPT} {row.description} {SUFFIX_PROMPT}"
+        # load dataset
         solution = data.get_solution(row.id)
-        questions = solution["question"].tolist()  # list[str]
-        choices_list = (
-            solution["choices"]
-            .apply(eval)
-            .apply(lambda x: x[0] if isinstance(x[0], list) else x)
-            .tolist()
-        )  # list[list[str]]
-        answers = solution["answer"].tolist()  # list[str]
+        question = json.loads(solution.loc[0, "question"])
+        choices = json.loads(solution.loc[0, "choices"])
+        answer = json.loads(solution.loc[0, "answer"])
 
         bitmap = sd_model.generate(
             prompt=prompt,
-            height=256,
-            width=256,
+            height=768,
+            width=768,
             negative_prompt=NEGATIVE_PROMPT,
             num_inference_steps=25,
             guidance_scale=15,
@@ -61,7 +59,7 @@ def evaluation_ocr_score():
             image=bitmap,
             max_size_bytes=10000,
             resize=True,
-            target_size=(256, 256),
+            target_size=(768, 768),
             adaptive_fill=True,
             num_colors=5,
         )
@@ -73,12 +71,12 @@ def evaluation_ocr_score():
         )
 
         image = image_processor.image.copy()
-     
+
         vqa_score = vqa_evaluator.score_batch(
             image=image,
-            questions=questions,
-            choices_list=choices_list,
-            answers=answers,
+            questions=question,
+            choices_list=choices,
+            answers=answer,
         )
 
         image_processor.reset().apply_random_crop_resize().apply_jpeg_compression(
@@ -91,7 +89,7 @@ def evaluation_ocr_score():
             image_processor.image, free_chars=4, use_num_char=True
         )
         print("-" * 50)
-        print(f"Description: {row.description}")
+        print(f"Description: {row.description} - id: {row.id}")
         print(f"VAQ_SCORE: {vqa_score}")
         print(f"OCR_SCORE: {ocr_score}")
         print(f"Number char: {num_char}")

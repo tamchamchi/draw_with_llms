@@ -11,6 +11,7 @@ PROCESSED_DATA_DIR = os.path.join(DATA_DIR, "processed")
 INTERNAL_DATA_DIR = os.path.join(DATA_DIR, "internal")
 RESULTS_DIR = os.path.join(DATA_DIR, "results")
 REPORT_DIR = os.path.join(PROJ_DIR, "report")
+SCORE_DIR = os.path.join(RESULTS_DIR, "score/json")
 
 
 # print(f"Project Dir: {PROJ_DIR}")

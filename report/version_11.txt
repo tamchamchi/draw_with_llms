@@ -1,0 +1,240 @@
+
+=== Attempt 1/1 ===
+Id: 02d892
+Description: a purple forest at dusk
+Converting to SVG... 
+
+SVG size: 1000 bytes
+
+SVG VQA Score: 0.9639
+SVG Aesthetic Score: 0.4947
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.8102
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: 0dcd2e
+Description: gray wool coat with a faux fur collar
+Converting to SVG... 
+
+SVG size: 984 bytes
+
+SVG VQA Score: 0.7725
+SVG Aesthetic Score: 0.4239
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.6634
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: 1e9ac1
+Description: a lighthouse overlooking the ocean
+Converting to SVG... 
+
+SVG size: 966 bytes
+
+SVG VQA Score: 0.6638
+SVG Aesthetic Score: 0.4405
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.6027
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: 2b25db
+Description: burgundy corduroy pants with patch pockets and silver buttons
+Converting to SVG... 
+
+SVG size: 973 bytes
+
+SVG VQA Score: 0.3723
+SVG Aesthetic Score: 0.4075
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.3789
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: 4e6a54
+Description: orange corduroy overalls
+Converting to SVG... 
+
+SVG size: 1000 bytes
+
+SVG VQA Score: 0.6504
+SVG Aesthetic Score: 0.3706
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.5651
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: 4f1b00
+Description: a purple silk scarf with tassel trim
+Converting to SVG... 
+
+SVG size: 991 bytes
+
+SVG VQA Score: 0.3113
+SVG Aesthetic Score: 0.3993
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.3257
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: 61b500
+Description: a green lagoon under a cloudy sky
+Converting to SVG... 
+
+SVG size: 952 bytes
+
+SVG VQA Score: 0.4785
+SVG Aesthetic Score: 0.4147
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.4642
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: 65cc74
+Description: crimson rectangles forming a chaotic grid
+Converting to SVG... 
+
+SVG size: 977 bytes
+
+SVG VQA Score: 0.9413
+SVG Aesthetic Score: 0.3538
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.7067
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: 7c4414
+Description: purple pyramids spiraling around a bronze cone
+Converting to SVG... 
+
+SVG size: 953 bytes
+
+SVG VQA Score: 0.6373
+SVG Aesthetic Score: 0.4450
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.5866
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: 996c3a
+Description: magenta trapezoids layered on a transluscent silver sheet
+Converting to SVG... 
+
+SVG size: 973 bytes
+
+SVG VQA Score: 0.4438
+SVG Aesthetic Score: 0.4004
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.4344
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: 9b71cc
+Description: a snowy plain
+Converting to SVG... 
+
+SVG size: 983 bytes
+
+SVG VQA Score: 0.7427
+SVG Aesthetic Score: 0.4306
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.6487
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: a395a3
+Description: black and white checkered pants
+Converting to SVG... 
+
+SVG size: 972 bytes
+
+SVG VQA Score: 0.7443
+SVG Aesthetic Score: 0.4534
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.6597
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: ad4c5c
+Description: a starlit night over snow-covered peaks
+Converting to SVG... 
+
+SVG size: 966 bytes
+
+SVG VQA Score: 0.8708
+SVG Aesthetic Score: 0.4404
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.7284
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: b679e3
+Description: khaki triangles and azure crescents
+Converting to SVG... 
+
+SVG size: 987 bytes
+
+SVG VQA Score: 0.3921
+SVG Aesthetic Score: 0.4054
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.3947
+✅ New best result
+----------------------------------------
+
+
+
+=== Attempt 1/1 ===
+Id: f16e62
+Description: a maroon dodecahedron interwoven with teal threads
+Converting to SVG... 
+
+SVG size: 949 bytes
+
+SVG VQA Score: 0.7481
+SVG Aesthetic Score: 0.4390
+SVG Ocr Score: 1.0000
+SVG Total Score: 0.6558
+✅ New best result
+----------------------------------------
+
+
