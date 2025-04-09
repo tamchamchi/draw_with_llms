@@ -14,3 +14,4 @@ grpcio
 polars
 google
 hf_xet
+more_itertools

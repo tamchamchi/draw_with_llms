@@ -1,6 +1,8 @@
 import os
 import string
 from dotenv import load_dotenv
+from more_itertools import chunked
+import statistics
 import torch
 import torch.nn as nn
 import clip
@@ -177,7 +179,7 @@ class VQAEvaluator:
 
         return batched_choice_probabilities
 
-    def ocr(self, image, free_chars=4):
+    def ocr(self, image, free_chars=4, use_num_char=False):
         inputs = (
             self.processor(
                 text='<image>ocr\n',
@@ -197,4 +199,5 @@ class VQAEvaluator:
         num_char = len(decoded)
 
         # Exponentially decreasing towards 0.0 if more than free_chars detected
-        return min(1.0, math.exp(-num_char + free_chars))
+        #---------------Modified Output----------------------
+        return min(1.0, math.exp(-num_char + free_chars)) if use_num_char else min(1.0, math.exp(-num_char + free_chars)), num_char

@@ -4,8 +4,10 @@ from models.stable_diffusion_v2 import StableDiffusionV2
 from features.build_calc_total_score import score
 from features.build_image_processor import ImageProcessor, svg_to_png
 from features.build_png2svg import bitmap_to_svg_layered
+from src.data.make_dataset import Data
 from PIL import Image
-from configs import RESULTS_DIR
+import os
+from configs import RESULTS_DIR, RAW_DATA_DIR
 
 # Khai báo các biến toàn cục để lưu mô hình
 vqa_evaluator = None
@@ -24,7 +26,7 @@ def load_models():
           pipe = StableDiffusionV2()
 
 def main():
-     load_models()
+     pass
 
 
 if __name__ == "__main__":

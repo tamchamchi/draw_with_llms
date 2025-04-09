@@ -10,6 +10,7 @@ RAW_DATA_DIR = os.path.join(DATA_DIR, 'raw')
 PROCESSED_DATA_DIR = os.path.join(DATA_DIR, 'processed')
 INTERNAL_DATA_DIR = os.path.join(DATA_DIR, 'internal')
 RESULTS_DIR = os.path.join(DATA_DIR, 'results')
+REPORT_DIR = os.path.join(PROJ_DIR, 'report')
 
 
 
