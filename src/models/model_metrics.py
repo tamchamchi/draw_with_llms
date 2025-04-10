@@ -8,8 +8,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")
 import numpy as np
 import pandas as pd
 
-from src.features.build_image_processor import ImageProcessor, svg_to_png
-from src.kaggle_evaluation import svg_constraints
+from src.data.image_processor import ImageProcessor, svg_to_png
+from src.data import svg_constraints
 
 from src.models.global_models import vqa_evaluator, aesthetic_evaluator
 

@@ -1,0 +1,61 @@
+        id                                                                question                                   choices       answer
+0   02d892                                  What is the main setting of the image?         [beach, desert, forest, mountain]       forest
+1   02d892                                  Is there anything purple in the image?                                 [no, yes]          yes
+2   02d892                             What time of day is suggested in the image?            [dawn, dusk, midday, midnight]         dusk
+3   02d892                        What color is prominently featured in the image?            [green, orange, purple, white]       purple
+4   0dcd2e                                                 What color is the coat?                  [blue, brown, gray, red]         gray
+5   0dcd2e                                     What part of the coat has faux fur?           [collar, hem, pockets, sleeves]       collar
+6   0dcd2e                                                     Is the coat purple?                                 [no, yes]           no
+7   0dcd2e                                      What material is the coat made of?             [cotton, leather, silk, wool]         wool
+8   1e9ac1                                 Is there an ocean visible in the image?                                 [no, yes]          yes
+9   1e9ac1  What is the spatial relationship between the lighthouse and the ocean?     [inside, next to, overlooking, under]  overlooking
+10  1e9ac1                                         Is there a desert in the image?                                 [no, yes]           no
+11  1e9ac1                              Is the lighthouse located under the ocean?                                 [no, yes]           no
+12  2b25db                                                   Are the pants yellow?                                 [no, yes]           no
+13  2b25db                                        Do the pants have patch pockets?                                 [no, yes]          yes
+14  2b25db                                                 Are the pants burgundy?                                 [no, yes]          yes
+15  2b25db                                      What item of clothing is depicted?              [dress, pants, shirt, skirt]        pants
+16  4e6a54                                              What material is the item?          [corduroy, denim, leather, silk]     corduroy
+17  4e6a54                                                      Is a hat depicted?                                 [no, yes]           no
+18  4e6a54                                           Is the item made of corduroy?                                 [no, yes]          yes
+19  4e6a54                                         What type of clothing is shown?      [a dress, a skirt, a suit, overalls]     overalls
+20  4f1b00                          Is there any purple item present in the image?                                 [no, yes]          yes
+21  4f1b00                                                    Is a scarf depicted?                                 [no, yes]          yes
+22  4f1b00                                  What kind of trim does the scarf have?            [beaded, fringe, lace, tassel]       tassel
+23  4f1b00                                                What color is the scarf?            [green, orange, purple, white]       purple
+24  61b500                                        Is the lagoon depicted as green?                                 [no, yes]          yes
+25  61b500                                 Is there a lagoon present in the image?                                 [no, yes]          yes
+26  61b500                                               What is above the lagoon?               [ceiling, roof, sky, trees]          sky
+27  61b500                            What body of water is depicted in the image?          [lagoon, mountain, ocean, river]       lagoon
+28  65cc74                                      Is the grid's arrangement chaotic?                                 [no, yes]          yes
+29  65cc74                                         Are the shapes primarily ovals?                                 [no, yes]           no
+30  65cc74                                 Is there a single large circle present?                                 [no, yes]           no
+31  65cc74                                      Are the primary shapes rectangles?                                 [no, yes]          yes
+32  7c4414                             Is the cone made of a bronze-like material?                                 [no, yes]          yes
+33  7c4414                                  Are the purple objects pyramid-shaped?                                 [no, yes]          yes
+34  7c4414                             What object is at the center of the spiral?             [cone, cube, pyramid, sphere]         cone
+35  7c4414                             What objects are spiraling around the cone?     [cubes, cylinders, pyramids, spheres]     pyramids
+36  996c3a                               Is the color silver present in the image?                                 [no, yes]          yes
+37  996c3a   Which word describes the silver sheet's ability to let light through?  [opaque, reflective, solid, translucent]  translucent
+38  996c3a                                Are the trapezoids layered on something?                                 [no, yes]          yes
+39  996c3a                                     What shape are the magenta objects?   [circles, stars, trapezoids, triangles]   trapezoids
+40  9b71cc                                                  What covers the plain?                [grass, sand, snow, water]         snow
+41  9b71cc                         What is the main geographical feature depicted?          [forest, mountain, ocean, plain]        plain
+42  9b71cc                                           Is the plain covered in lava?                                 [no, yes]           no
+43  9b71cc                                                     Is the plain snowy?                                 [no, yes]          yes
+44  a395a3         What is the other color in the checkered pattern besides black?             [orange, pink, white, yellow]        white
+45  a395a3                                Is the item of clothing a pair of pants?                                 [no, yes]          yes
+46  a395a3                                           Is brown part of the pattern?                                 [no, yes]           no
+47  a395a3                     What is one of the colors of the checkered pattern?                 [black, blue, green, red]        black
+48  ad4c5c                               Is the image depicting a nighttime scene?                                 [no, yes]          yes
+49  ad4c5c                                 Is the image depicting a daytime scene?                                 [no, yes]           no
+50  ad4c5c                                   Are there peaks visible in the image?                                 [no, yes]          yes
+51  ad4c5c                                    Is the night sky depicted as cloudy?                                 [no, yes]           no
+52  b679e3                                    Are there any azure colored spirals?                                 [no, yes]           no
+53  b679e3                                  Are there any crescent shapes present?                                 [no, yes]          yes
+54  b679e3                                      What color are some of the shapes?             [black, khaki, orange, white]        khaki
+55  b679e3                                 What shape are some of the khaki forms?  [circles, pentagons, squares, triangles]    triangles
+56  f16e62                                           Are the threads colored pink?                                 [no, yes]           no
+57  f16e62                       Is there a triangle interwoven with teal threads?                                 [no, yes]           no
+58  f16e62                                  Is there anything maroon in the image?                                 [no, yes]          yes
+59  f16e62                               Are there any teal elements in the image?                                 [no, yes]          yes

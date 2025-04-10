@@ -5,10 +5,11 @@ import os
 import pandas as pd
 
 
-from features.build_image_compression import image_compression
-from features.build_image_processor import svg_to_png
-from features.build_png2svg import bitmap_to_svg_layered
-from features.build_calc_total_score import score
+from src.utils.image_compression import image_compression
+from src.models.model_metrics import score
+from src.data.image_processor import svg_to_png
+from src.utils.bitmap_to_svg import bitmap_to_svg_layered
+
 
 from src.configs import RESULTS_DIR
 
@@ -44,130 +45,162 @@ class ScoreEvaluation:
         verbose: bool = False,
         random_seed: int = 42,
     ) -> dict:
-        if not use_image_compression:
-            version_folder = os.path.join(
-                RESULTS_DIR, f"{version}-no_image_compression "
+        """
+        Generates and evaluates multiple image variants from text prompts using a diffusion model.
+        Produces SVG conversions with optional compression and tracks best results across attempts.
+
+        Args:
+            id_prompt (str): Unique identifier for the prompt configuration
+            prefix_prompt (str): Text prepended to the main description
+            suffix_prompt (str): Text appended to the main description
+            negative_prompt (str): Negative guidance for image generation
+            width (int): Output image width in pixels (default: 512)
+            height (int): Output image height in pixels (default: 512)
+            num_color (int): Color quantization for SVG conversion (default: 8)
+            num_inference_steps (int): Diffusion process iterations (default: 25)
+            guidance_scale (float): Prompt guidance strength (default: 15)
+            use_image_compression (bool): Enable pre-SVG compression (default: False)
+            version (str): Experiment version identifier
+            num_attempts (int): Generation attempts for best result (default: 1)
+            verbose (bool): Enable detailed logging (default: False)
+            random_seed (int): Reproducibility seed (default: 42)
+
+        Returns:
+            dict: Evaluation results with scores and metadata
+        """
+
+        # Setup output directory structure
+        # ------------------------------
+        # Create version-specific folder with compression status flag
+        compression_suffix = (
+            "-have_image_compression"
+            if use_image_compression
+            else "-no_image_compression"
+        )
+        version_folder = os.path.join(RESULTS_DIR, f"{version}{compression_suffix}")
+
+        # Create ID-specific subfolder
+        id_folder = os.path.join(version_folder, str(id_prompt))
+
+        # Ensure directories exist
+        os.makedirs(id_folder, exist_ok=True)  # Nested creation with exist_ok
+
+        # Initialize experiment environment
+        # --------------------------------
+        self.set_random_seed(random_seed)  # Ensure reproducibility
+
+        # Track best performing attempt
+        best_scores = {"total": 0, "vqa": 0, "aesthetic": 0, "ocr": 0}
+
+        # Get dataset references
+        # ----------------------
+        solution = self.data.get_solution(id_prompt)  # Ground truth data
+        description = self.data.get_description_by_id(id_prompt)  # Core prompt content
+
+        # Construct generation prompt
+        # ---------------------------
+        prompt = f"{prefix_prompt} {description} {suffix_prompt}".strip()
+
+        # Main generation loop
+        # --------------------
+        for attempt in range(num_attempts):
+            # Generate initial bitmap
+            bitmap = self.my_model.generate(
+                prompt=prompt,
+                negative_prompt=negative_prompt,
+                height=height,
+                width=width,
+                num_inference_steps=num_inference_steps,
+                guidance_scale=guidance_scale,
             )
-        else:
-            version_folder = os.path.join(
-                RESULTS_DIR, f"{version}-have_image_compression"
+
+            # SVG Conversion pipeline
+            # -----------------------
+            if use_image_compression:
+                # Apply lossy compression before vectorization
+                processed_image = image_compression(bitmap)
+            else:
+                processed_image = bitmap  # Use original image
+
+            # Convert to layered SVG with size constraints
+            svg = bitmap_to_svg_layered(
+                image=processed_image,
+                max_size_bytes=10000,  # 10KB size limit
+                resize=True,
+                target_size=(width, height),
+                adaptive_fill=True,
+                num_colors=num_color,  # Color quantization
             )
 
-        id_folder = os.path.join(version_folder, f"{id_prompt}")
+            # Evaluation metrics
+            # ------------------
+            # Create evaluation dataframe
+            submission = pd.DataFrame({"id": [id_prompt], "svg": [svg]})
 
-        os.makedirs(version_folder, exist_ok=True)
-        os.makedirs(id_folder, exist_ok=True)
+            # Calculate scores
+            total_score, vqa_score, aesthetic_score, ocr_score = score(
+                solution, submission, "row_id", random_seed=42
+            )
 
-        self.set_random_seed(random_seed=random_seed)
+            # Additional quality metrics
+            bitmap_quality = self.aesthetic_evaluator.score(bitmap)
+            if use_image_compression:
+                compressed_quality = self.aesthetic_evaluator.score(processed_image)
 
-        best_vqa_score = 0
-        best_aesthetic_score = 0
-        best_ocr_score = 0
-        best_total_score = 0
+            # File persistence
+            # ----------------
+            # Save all image variants with quality scores in filenames
+            def naming_template(t, quality):
+                return f"{t} - {attempt} - {quality:.4f}.png"
 
-        solution = self.data.get_solution(idx=id_prompt)
-        description = self.data.get_description_by_id(idx=id_prompt)
+            if use_image_compression:
+                processed_image.save(
+                    os.path.join(
+                        id_folder, naming_template("compressed", compressed_quality)
+                    ),
+                )
 
-        prompt = f"{prefix_prompt} {description} {suffix_prompt}"
+            bitmap.save(os.path.join(id_folder, naming_template("raw", bitmap_quality)))
 
-        for i in range(num_attempts):
+            svg_to_png(svg).save(
+                os.path.join(id_folder, naming_template("submit", aesthetic_score)),
+            )
+
+            # Score tracking
+            # --------------
+            if total_score > best_scores["total"]:
+                best_scores.update(
+                    {
+                        "total_score": total_score,
+                        "vqa_score": vqa_score,
+                        "aesthetic_score": aesthetic_score,
+                        "ocr_score": ocr_score,
+                    }
+                )
+                if verbose:
+                    print("✅ New best result")
+            elif verbose:
+                print("❌ Score not improved")
+
+            # Progress logging
+            # ----------------
             if verbose:
-                print(f"\n=== Attempt {i + 1}/{num_attempts} ===")
-                print(f"Id: {id_prompt}")
+                print(f"\nAttempt {attempt + 1}/{num_attempts}")
+                print(f"Prompt ID: {id_prompt}")
                 print(f"Description: {description}")
-
-                bitmap = self.my_model.generate(
-                    prompt=prompt,
-                    height=height,
-                    width=width,
-                    negative_prompt=negative_prompt,
-                    num_inference_steps=num_inference_steps,
-                    guidance_scale=guidance_scale,
-                )
-
-                if verbose:
-                    print("Converting to SVG... \n")
-
-                if use_image_compression:
-                    compressed_image = image_compression(image_input=bitmap)
-
-                    svg = bitmap_to_svg_layered(
-                        image=compressed_image,
-                        max_size_bytes=1000,
-                        resize=True,
-                        target_size=(width, height),
-                        adaptive_fill=True,
-                        num_colors=num_color,
-                    )
-                else:
-                    svg = bitmap_to_svg_layered(
-                        image=bitmap,
-                        max_size_bytes=1000,
-                        resize=True,
-                        target_size=(width, height),
-                        adaptive_fill=True,
-                        num_colors=num_color,
-                    )
-                    
-
-                svg_size = len(svg.encode("utf-8"))
-                if verbose:
-                    print(f"SVG size: {svg_size} bytes\n")
-
-                submission = pd.DataFrame({"id": [id_prompt], "svg": [svg]})
-
-                total_score, vqa_score, aesthetic_score, ocr_score = score(
-                    solution, submission, "row_id", random_seed=42
-                )
-                aesthetic_score_original = self.aesthetic_evaluator.score(bitmap)
-
-                if use_image_compression:
-                    aesthetic_score_compressed = self.aesthetic_evaluator.score(
-                        compressed_image
-                    )
-                    compressed_image_path = os.path.join(
-                        id_folder,
-                        f"compressed - {aesthetic_score_compressed:.4f}.png",
-                    )
-                    compressed_image.save(compressed_image_path, format="PNG")
-
-                raw_image_path = os.path.join(
-                    id_folder, f"raw - {aesthetic_score_original:.4f}.png"
-                )
-                bitmap.save(raw_image_path, format="PNG")
-
-                final_image_path = os.path.join(
-                    id_folder, f"final - {aesthetic_score:.4f}.png"
-                )
-                svg_to_png(svg).save(final_image_path, format="PNG")
-
-                if verbose:
-                    print(f"SVG VQA Score: {vqa_score:.4f}")
-                    print(f"SVG Aesthetic Score: {aesthetic_score:.4f}")
-                    print(f"SVG Ocr Score: {ocr_score:.4f}")
-                    print(f"SVG Total Score: {total_score:.4f}")
-
-                if total_score > best_total_score:
-                    best_total_score = total_score
-                    best_vqa_score = vqa_score
-                    best_aesthetic_score = aesthetic_score
-                    best_ocr_score = ocr_score
-                    if verbose:
-                        print("✅ New best result")
-                else:
-                    if verbose:
-                        print("❌ Not better than current best")
-
+                print(f"SVG Size: {len(svg.encode('utf-8'))} bytes")
+                print(f"- Total Score: {total_score:.4f}")
+                print(f"- VQA Score: {vqa_score:.4f}")
+                print(f"- Aesthetic Score: {aesthetic_score:.4f}")
+                print(f"- OCR Score: {ocr_score:.4f}")
                 print("-" * 40)
-                print("\n")
 
+        # Final results packaging
+        # -----------------------
         return {
-            "method": "I->SVG" if not use_image_compression else "I->KMean->SVG",
+            "method": "I->KMean->SVG" if use_image_compression else "I->SVG",
             "model": "SDv2",
             "id_desc": id_prompt,
             "description": description,
-            "total_score": best_total_score,
-            "vqa_score": best_vqa_score,
-            "aesthetic_score": best_aesthetic_score,
-            "ocr_score": best_ocr_score,
+            **{f"{k}": v for k, v in best_scores.items()},
         }

@@ -6,8 +6,8 @@ import numpy as np
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from build_image_processor import ImageProcessor, svg_to_png
-from build_png2svg import bitmap_to_svg_layered
+from src.data.image_processor import ImageProcessor, svg_to_png
+from src.utils.bitmap_to_svg import bitmap_to_svg_layered
 
 from src.configs import RAW_DATA_DIR, RESULTS_DIR
 from src.data.make_dataset import Data
@@ -94,5 +94,3 @@ def evaluation_ocr_score():
         print(f"OCR_SCORE: {ocr_score}")
         print(f"Number char: {num_char}")
 
-
-evaluation_ocr_score()

@@ -2,26 +2,25 @@ Average results by method:
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                      total_score  vqa_score  aesthetic_score  ocr_score
 method        model                                                    
-I->KMean->SVG SDv2      0.566177   0.636361         0.441150   0.990933
-I->SVG        Flux      0.576238   0.715658         0.424332   0.933333
-              SDv2      0.560528   0.643678         0.434633   0.975594
+I->KMean->SVG SDv2      0.568828   0.639712         0.437365   0.993200
+I->SVG        SDv2      0.560528   0.643678         0.434633   0.975594
 
 
 Average results by prompt:
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     id_prompt                                                               summary_prompt model  total_score  vqa_score  aesthetic_score  ocr_score
-0           0                                                    Flat color, high contrast  Flux     0.576238   0.715658         0.424332   0.933333
-1           0                                                    Flat color, high contrast  SDv2     0.521948   0.580860         0.446008   0.978929
-2           1                                                           Simple, flat style  SDv2     0.509829   0.550665         0.445686   1.000000
-3           2                                              Minimal, flat style, complex bg  SDv2     0.520763   0.594536         0.434471   0.971178
-4           3                                            Minimal, outline only, complex bg  SDv2     0.584662   0.672303         0.438591   0.978929
-5           4                                        Prompt, outline style, 400x320 output  SDv2     0.560017   0.657067         0.434752   0.956132
-6           5                                    Flat vector icon, no details, clean style  SDv2     0.573608   0.636940         0.435741   1.000000
-7           6                                        Flat icon, no texture, 400x320 output  SDv2     0.594608   0.668470         0.436694   1.000000
-8           7                             Flat icon, avoid photo/bg/detail, 400x320 output  SDv2     0.579849   0.662364         0.442400   0.978929
-9           8                             Flat icon, avoid shadows/texture, 400x320 output  SDv2     0.590380   0.662050         0.436411   1.000000
-10          9  Icon style, avoid realism, 512x512 output, best_score 0.541 (I->KMean->SVG)  SDv2     0.579338   0.675793         0.432998   0.978929
-11         10                                    Icon style, solid + sharp, 512x400 output  SDv2     0.585215   0.662118         0.436193   1.000000
+0           0                                                    Flat color, high contrast  SDv2     0.521948   0.580860         0.446008   0.978929
+1           1                                                           Simple, flat style  SDv2     0.509829   0.550665         0.445686   1.000000
+2           2                                              Minimal, flat style, complex bg  SDv2     0.520763   0.594536         0.434471   0.971178
+3           3                                            Minimal, outline only, complex bg  SDv2     0.584662   0.672303         0.438591   0.978929
+4           4                                        Prompt, outline style, 400x320 output  SDv2     0.560017   0.657067         0.434752   0.956132
+5           5                                    Flat vector icon, no details, clean style  SDv2     0.573608   0.636940         0.435741   1.000000
+6           6                                        Flat icon, no texture, 400x320 output  SDv2     0.594608   0.668470         0.436694   1.000000
+7           7                             Flat icon, avoid photo/bg/detail, 400x320 output  SDv2     0.579849   0.662364         0.442400   0.978929
+8           8                             Flat icon, avoid shadows/texture, 400x320 output  SDv2     0.590380   0.662050         0.436411   1.000000
+9           9  Icon style, avoid realism, 512x512 output, best_score 0.541 (I->KMean->SVG)  SDv2     0.579338   0.675793         0.432998   0.978929
+10         10                                    Icon style, solid + sharp, 512x400 output  SDv2     0.585215   0.662118         0.436193   1.000000
+11         11                                                                          NaN  SDv2     0.576781   0.649763         0.426011   1.000000
 
 
 Average results by method and prompt:
@@ -38,7 +37,7 @@ Average results by method and prompt:
 8           8                             Flat icon, avoid shadows/texture, 400x320 output  I->KMean->SVG  SDv2     0.592465   0.664735         0.438964   1.000000
 9           9  Icon style, avoid realism, 512x512 output, best_score 0.541 (I->KMean->SVG)  I->KMean->SVG  SDv2     0.604072   0.686568         0.435965   1.000000
 10         10                                    Icon style, solid + sharp, 512x400 output  I->KMean->SVG  SDv2     0.590689   0.667109         0.438194   1.000000
-11          0                                                    Flat color, high contrast         I->SVG  Flux     0.576238   0.715658         0.424332   0.933333
+11         11                                                                          NaN  I->KMean->SVG  SDv2     0.576781   0.649763         0.426011   1.000000
 12          0                                                    Flat color, high contrast         I->SVG  SDv2     0.501828   0.567593         0.442855   0.957859
 13          1                                                           Simple, flat style         I->SVG  SDv2     0.501640   0.539346         0.443336   1.000000
 14          2                                              Minimal, flat style, complex bg         I->SVG  SDv2     0.522725   0.617447         0.431861   0.942356
