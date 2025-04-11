@@ -9,6 +9,7 @@ from src.utils.image_compression import image_compression
 from src.models.model_metrics import score
 from src.data.image_processor import svg_to_png
 from src.utils.bitmap_to_svg import bitmap_to_svg_layered
+from src.utils.add_caption_image import add_caption_to_image
 
 
 from src.configs import RESULTS_DIR
@@ -154,15 +155,17 @@ class ScoreEvaluation:
                 return f"{t} - {attempt} - {quality:.4f}.png"
 
             if use_image_compression:
-                processed_image.save(
+                captioned_processed_image = add_caption_to_image(processed_image, description) # add description for image
+                captioned_processed_image.save(
                     os.path.join(
                         id_folder, naming_template("compressed", compressed_quality)
                     ),
                 )
-
-            bitmap.save(os.path.join(id_folder, naming_template("raw", bitmap_quality)))
-
-            svg_to_png(svg).save(
+            captioned_bitmap = add_caption_to_image(bitmap, description) # add description for image
+            captioned_bitmap .save(os.path.join(id_folder, naming_template("raw", bitmap_quality)))
+            
+            captioned_submit_image = add_caption_to_image(svg_to_png(svg), description) # add description for image
+            captioned_submit_image.save(
                 os.path.join(id_folder, naming_template("submit", aesthetic_score)),
             )
 
