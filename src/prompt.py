@@ -6,3 +6,11 @@ version_11 = {
     "VERSION" : "Version11-Minimal_flat_icon_no_details-512x512",
     "id_prompt" : 11
 }
+
+version_12 = {
+    "PREFIX_PROMPT" : "",
+    "SUFFIX_PROMPT" : "minimal flat 2d vector icon. lineal color. on a white background. trending on artstation.",
+    "NEGATIVE_PROMPT" : "",
+    "VERSION" : "Prompt from VectorFusion paper.",
+    "id_prompt" : 12
+}

@@ -62,3 +62,34 @@ class AestheticEvaluator:
         score = self.predictor(torch.from_numpy(image_features).to(self.device).float())
 
         return score.item() / 10.0  # scale to [0, 1]
+
+    def compute_clip_similarity(self, image: Image.Image, text: str) -> float:
+        """
+        Compute the similarity score between an image and a text using the CLIP model.
+
+        Args:
+            image (PIL.Image.Image): The input image to be compared.
+            text (str): The text description to compare with the image.
+
+        Returns:
+            float: A similarity score between the image and text embeddings.
+                Higher scores indicate greater similarity.
+        """
+
+        # Preprocess the image (resize, normalize, etc.), add batch dimension, and move to the correct device
+        image = self.preprocessor(image).unsqueeze(0).to(self.device)
+
+        # Tokenize the input text and move it to the correct device
+        text = clip.tokenize([text]).to(self.device)
+
+        # Disable gradient computation for inference
+        with torch.no_grad():
+            # Extract image features using CLIP
+            image_features = self.clip_model.encode_image(image)
+            # Extract text features using CLIP
+            text_features = self.clip_model.encode_text(text)
+
+        # Compute cosine similarity (dot product since CLIP features are normalized)
+        similarity = (image_features @ text_features.T).item()
+
+        return similarity
