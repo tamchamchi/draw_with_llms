@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")
 
 from src.configs import INTERNAL_DATA_DIR
 from src.models.global_models import aesthetic_evaluator, my_model
-from src.prompt import version_11, version_12
+from src.versions import version_11, version_12
 from src.utils.global_variable import data
 from src.utils.add_caption_image import add_caption_to_image
 

@@ -3,13 +3,15 @@ import numpy as np
 import random
 import os
 import pandas as pd
-
+from PIL import Image
+import json
 
 from src.utils.image_compression import image_compression
 from src.models.model_metrics import score
-from src.data.image_processor import svg_to_png
 from src.utils.bitmap_to_svg import bitmap_to_svg_layered
 from src.utils.add_caption_image import add_caption_to_image
+from src.data.image_processor import ImageProcessor, svg_to_png
+from src.utils.common import naming_template, score_caption
 
 
 from src.configs import RESULTS_DIR
@@ -151,22 +153,32 @@ class ScoreEvaluation:
             # File persistence
             # ----------------
             # Save all image variants with quality scores in filenames
-            def naming_template(t, quality):
-                return f"{t} - {attempt} - {quality:.4f}.png"
 
             if use_image_compression:
-                captioned_processed_image = add_caption_to_image(processed_image, description) # add description for image
+                captioned_processed_image = add_caption_to_image(
+                    processed_image, [description]
+                )  # add description for image
                 captioned_processed_image.save(
                     os.path.join(
-                        id_folder, naming_template("compressed", compressed_quality)
+                        id_folder,
+                        naming_template("compressed", attempt, compressed_quality),
                     ),
                 )
-            captioned_bitmap = add_caption_to_image(bitmap, description) # add description for image
-            captioned_bitmap .save(os.path.join(id_folder, naming_template("raw", bitmap_quality)))
-            
-            captioned_submit_image = add_caption_to_image(svg_to_png(svg), description) # add description for image
+            captioned_bitmap = add_caption_to_image(
+                bitmap, [description]
+            )  # add description for image
+            captioned_bitmap.save(
+                os.path.join(id_folder, naming_template("raw", attempt, bitmap_quality))
+            )
+
+            captioned_submit_image = add_caption_to_image(
+                svg_to_png(svg),
+                [description, score_caption(total_score, vqa_score, aesthetic_score, ocr_score)],
+            )  # add description for image
             captioned_submit_image.save(
-                os.path.join(id_folder, naming_template("submit", aesthetic_score)),
+                os.path.join(
+                    id_folder, naming_template("submit", attempt, aesthetic_score)
+                ),
             )
 
             # Score tracking
@@ -207,3 +219,47 @@ class ScoreEvaluation:
             "description": description,
             **{f"{k}": v for k, v in best_scores.items()},
         }
+
+    def vqa_orc_evaluation(
+        self,
+        id_prompt: str = None,
+        images: list[Image.Image] = None,
+    ) -> dict:
+        solution = self.data.get_solution(id_prompt)
+
+        question = json.loads(solution.loc[0, "question"])
+        choices = json.loads(solution.loc[0, "choices"])
+        answers = json.loads(solution.loc[0, "answers"])
+
+        results = {"images": [], "vqa_score": [], "ocr_score": [], "num_char": []}
+
+        rng = np.random.RandomState(42)
+        group_seed = rng.randint(0, np.iinfo(np.int32).max)
+
+        for i, image in enumerate(images):
+            image_processor = ImageProcessor(image=image, seed=group_seed).apply()
+            processed_image = image_processor.image.copy()
+
+            vqa_score = self.vqa_evaluator(
+                image=processed_image,
+                question=question,
+                choices_list=choices,
+                answers=answers,
+            )
+
+            reset_image = (
+                image_processor.reset()
+                .apply_random_crop_resize()
+                .apply_jpeg_compression(quality=90)
+            )
+
+            ocr_score, num_char = self.vqa_evaluator.ocr(
+                reset_image, free_chars=4, use_num_char=True
+            )
+
+            results["images"].append([processed_image, reset_image])
+            results["vqa_score"].append(vqa_score)
+            results["ocr_score"].append(ocr_score)
+            results["num_char"].append(num_char)
+
+        return results

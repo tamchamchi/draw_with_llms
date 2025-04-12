@@ -1,0 +1,16 @@
+        id                                                    description
+0   02d892                                        a purple forest at dusk
+1   0dcd2e                          gray wool coat with a faux fur collar
+2   1e9ac1                             a lighthouse overlooking the ocean
+3   2b25db  burgundy corduroy pants with patch pockets and silver buttons
+4   4e6a54                                       orange corduroy overalls
+5   4f1b00                           a purple silk scarf with tassel trim
+6   61b500                              a green lagoon under a cloudy sky
+7   65cc74                      crimson rectangles forming a chaotic grid
+8   7c4414                 purple pyramids spiraling around a bronze cone
+9   996c3a      magenta trapezoids layered on a transluscent silver sheet
+10  9b71cc                                                  a snowy plain
+11  a395a3                                black and white checkered pants
+12  ad4c5c                        a starlit night over snow-covered peaks
+13  b679e3                            khaki triangles and azure crescents
+14  f16e62             a maroon dodecahedron interwoven with teal threads
