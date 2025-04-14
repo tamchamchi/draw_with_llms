@@ -2,8 +2,8 @@ Average results by method:
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                      total_score  vqa_score  aesthetic_score  ocr_score
 method        model                                                    
-I->KMean->SVG SDv2      0.575278   0.648949         0.441545   0.992024
-I->SVG        SDv2      0.562942   0.653954         0.436487   0.967492
+I->KMean->SVG SDv2      0.550005   0.652025         0.442470   0.943584
+I->SVG        SDv2      0.560432   0.641673         0.435353   0.977471
 
 
 Average results by prompt:
@@ -20,9 +20,13 @@ Average results by prompt:
 8           8                             Flat icon, avoid shadows/texture, 400x320 output  SDv2     0.590380   0.662050         0.436411   1.000000
 9           9  Icon style, avoid realism, 512x512 output, best_score 0.541 (I->KMean->SVG)  SDv2     0.579338   0.675793         0.432998   0.978929
 10         10                                    Icon style, solid + sharp, 512x400 output  SDv2     0.585215   0.662118         0.436193   1.000000
-11         11                                         Minimal_flat_icon_no_details-512x512  SDv2     0.579501   0.657347         0.439137   0.988507
-12         12                                         Minimal_flat_icon_no_details-768x768  SDv2     0.587658   0.687530         0.463511   0.966667
-13         13                                       Minimal_flat_icon_no_details-1024x1024  SDv2     0.577922   0.713885         0.433671   0.933334
+11         11                                         Minimal_flat_icon_no_details-512x512  SDv2     0.599465   0.672638         0.440920   1.000000
+12         12                                         Minimal_flat_icon_no_details-768x768  SDv2     0.576902   0.668186         0.457559   0.955561
+13         13                                       Minimal_flat_icon_no_details-1024x1024  SDv2     0.523201   0.724322         0.435002   0.833338
+14         14                                        Simple, Classic, no_details-1024x1024  SDv2     0.436531   0.684727         0.442655   0.742758
+15         15                                         Minimal_flat_icon_no_details-384x384  SDv2     0.513154   0.551609         0.440465   1.000000
+16         16                                                                          NaN  SDv2     0.538210   0.637029         0.441542   0.922780
+17         17                                                                          NaN  SDv2     0.588738   0.654003         0.449383   1.000000
 
 
 Average results by method and prompt:
@@ -39,22 +43,24 @@ Average results by method and prompt:
 8           8                             Flat icon, avoid shadows/texture, 400x320 output  I->KMean->SVG  SDv2     0.592465   0.664735         0.438964   1.000000
 9           9  Icon style, avoid realism, 512x512 output, best_score 0.541 (I->KMean->SVG)  I->KMean->SVG  SDv2     0.604072   0.686568         0.435965   1.000000
 10         10                                    Icon style, solid + sharp, 512x400 output  I->KMean->SVG  SDv2     0.590689   0.667109         0.438194   1.000000
-11         11                                         Minimal_flat_icon_no_details-512x512  I->KMean->SVG  SDv2     0.582107   0.652387         0.440189   1.000000
-12         12                                         Minimal_flat_icon_no_details-768x768  I->KMean->SVG  SDv2     0.614039   0.687808         0.462229   1.000000
-13         13                                       Minimal_flat_icon_no_details-1024x1024  I->KMean->SVG  SDv2     0.591103   0.733652         0.436452   0.933333
-14          0                                                    Flat color, high contrast         I->SVG  SDv2     0.501828   0.567593         0.442855   0.957859
-15          1                                                           Simple, flat style         I->SVG  SDv2     0.501640   0.539346         0.443336   1.000000
-16          2                                              Minimal, flat style, complex bg         I->SVG  SDv2     0.522725   0.617447         0.431861   0.942356
-17          3                                            Minimal, outline only, complex bg         I->SVG  SDv2     0.594463   0.667898         0.436705   1.000000
-18          4                                        Prompt, outline style, 400x320 output         I->SVG  SDv2     0.566898   0.678046         0.429197   0.945597
-19          5                                    Flat vector icon, no details, clean style         I->SVG  SDv2     0.563503   0.622851         0.431521   1.000000
-20          6                                        Flat icon, no texture, 400x320 output         I->SVG  SDv2     0.591906   0.668028         0.435622   1.000000
-21          7                             Flat icon, avoid photo/bg/detail, 400x320 output         I->SVG  SDv2     0.593839   0.703366         0.437220   0.957859
-22          8                             Flat icon, avoid shadows/texture, 400x320 output         I->SVG  SDv2     0.588294   0.659365         0.433859   1.000000
-23          9  Icon style, avoid realism, 512x512 output, best_score 0.541 (I->KMean->SVG)         I->SVG  SDv2     0.554604   0.665018         0.430030   0.957859
-24         10                                    Icon style, solid + sharp, 512x400 output         I->SVG  SDv2     0.579740   0.657127         0.434192   1.000000
-25         11                                         Minimal_flat_icon_no_details-512x512         I->SVG  SDv2     0.572551   0.670573         0.436332   0.957859
-26         12                                         Minimal_flat_icon_no_details-768x768         I->SVG  SDv2     0.561277   0.687253         0.464793   0.933334
-27         13                                       Minimal_flat_icon_no_details-1024x1024         I->SVG  SDv2     0.564741   0.694117         0.430890   0.933334
+11         11                                         Minimal_flat_icon_no_details-512x512  I->KMean->SVG  SDv2     0.599465   0.672638         0.440920   1.000000
+12         12                                         Minimal_flat_icon_no_details-768x768  I->KMean->SVG  SDv2     0.576902   0.668186         0.457559   0.955561
+13         13                                       Minimal_flat_icon_no_details-1024x1024  I->KMean->SVG  SDv2     0.523201   0.724322         0.435002   0.833338
+14         14                                        Simple, Classic, no_details-1024x1024  I->KMean->SVG  SDv2     0.436531   0.684727         0.442655   0.742758
+15         15                                         Minimal_flat_icon_no_details-384x384  I->KMean->SVG  SDv2     0.513154   0.551609         0.440465   1.000000
+16         16                                                                          NaN  I->KMean->SVG  SDv2     0.538210   0.637029         0.441542   0.922780
+17         17                                                                          NaN  I->KMean->SVG  SDv2     0.603466   0.672196         0.452077   1.000000
+18          0                                                    Flat color, high contrast         I->SVG  SDv2     0.501828   0.567593         0.442855   0.957859
+19          1                                                           Simple, flat style         I->SVG  SDv2     0.501640   0.539346         0.443336   1.000000
+20          2                                              Minimal, flat style, complex bg         I->SVG  SDv2     0.522725   0.617447         0.431861   0.942356
+21          3                                            Minimal, outline only, complex bg         I->SVG  SDv2     0.594463   0.667898         0.436705   1.000000
+22          4                                        Prompt, outline style, 400x320 output         I->SVG  SDv2     0.566898   0.678046         0.429197   0.945597
+23          5                                    Flat vector icon, no details, clean style         I->SVG  SDv2     0.563503   0.622851         0.431521   1.000000
+24          6                                        Flat icon, no texture, 400x320 output         I->SVG  SDv2     0.591906   0.668028         0.435622   1.000000
+25          7                             Flat icon, avoid photo/bg/detail, 400x320 output         I->SVG  SDv2     0.593839   0.703366         0.437220   0.957859
+26          8                             Flat icon, avoid shadows/texture, 400x320 output         I->SVG  SDv2     0.588294   0.659365         0.433859   1.000000
+27          9  Icon style, avoid realism, 512x512 output, best_score 0.541 (I->KMean->SVG)         I->SVG  SDv2     0.554604   0.665018         0.430030   0.957859
+28         10                                    Icon style, solid + sharp, 512x400 output         I->SVG  SDv2     0.579740   0.657127         0.434192   1.000000
+29         17                                                                          NaN         I->SVG  SDv2     0.559283   0.617616         0.443994   1.000000
 
 

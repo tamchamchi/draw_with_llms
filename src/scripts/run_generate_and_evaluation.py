@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")
 
 from src.features.build_evaluation import ScoreEvaluation
 from src.utils.common import save_results_to_json
-from src.configs import SCORE_DIR, RAW_DATA_DIR
+from src.configs import SCORE_DIR, RAW_DATA_DIR, PROCESSED_DATA_DIR
 from src.data.make_dataset import Data
 from src.models.global_models import vqa_evaluator, aesthetic_evaluator, my_model
 from src.versions import versions
@@ -16,7 +16,7 @@ QUESTION_DATA_PATH = os.path.join(RAW_DATA_DIR, "drawing-with-llms/questions.par
 
 data = Data(TRAIN_DATA_PATH, QUESTION_DATA_PATH)
 
-version = "version_16"
+version = "version_20"
 VERSION = versions.get(version).copy()
 
 

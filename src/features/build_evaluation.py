@@ -130,7 +130,7 @@ class ScoreEvaluation:
                 image=processed_image,
                 max_size_bytes=10000,  # 10KB size limit
                 resize=True,
-                target_size=(width, height),
+                target_size=(384, 384),
                 adaptive_fill=True,
                 num_colors=num_color,  # Color quantization
             )
@@ -146,38 +146,71 @@ class ScoreEvaluation:
             )
 
             # Additional quality metrics
+
+            ## Bitmap
             bitmap_quality = self.aesthetic_evaluator.score(bitmap)
+            eval_vqa_bitmap = self.vqa_orc_evaluation(
+                id_prompt=id_prompt, image=bitmap
+            )
+            vqa_bitmap = " ".join(f"{score:.2f}" for score in eval_vqa_bitmap.get("vqa_score"))
+            num_char_bitmap = eval_vqa_bitmap.get("num_char")
+            vqa_score_list_bitmap = f"VQA: {vqa_bitmap}"
+            char_in_bitmap = f"Text: {num_char_bitmap}"
+
+            ## Compressed image
             if use_image_compression:
                 compressed_quality = self.aesthetic_evaluator.score(processed_image)
 
+            ## Submit image
+            image_submit = svg_to_png(svg)
+            eval_vqa_submit = self.vqa_orc_evaluation(
+                id_prompt=id_prompt, image=image_submit
+            )
+            vqa_submit = " ".join(f"{score:.2f}" for score in eval_vqa_submit.get("vqa_score"))
+            num_char_submit = eval_vqa_submit.get("num_char")
+            vqa_score_list_submit = f"VQA: {vqa_submit}"
+            char_in_submit = f"Text: {num_char_submit}"
             # File persistence
             # ----------------
             # Save all image variants with quality scores in filenames
 
+            ## Compressed image
             if use_image_compression:
                 captioned_processed_image = add_caption_to_image(
                     processed_image, [description]
-                )  # add description for image
+                )
                 captioned_processed_image.save(
                     os.path.join(
                         id_folder,
                         naming_template("compressed", attempt, compressed_quality),
                     ),
                 )
+            ## Bitmap
             captioned_bitmap = add_caption_to_image(
-                bitmap, [description]
-            )  # add description for image
+                bitmap, [description, vqa_score_list_bitmap, char_in_bitmap]
+            )
             captioned_bitmap.save(
                 os.path.join(id_folder, naming_template("raw", attempt, bitmap_quality))
             )
-
+            # Submit image
             captioned_submit_image = add_caption_to_image(
-                svg_to_png(svg),
-                [description, score_caption(total_score, vqa_score, aesthetic_score, ocr_score)],
-            )  # add description for image
+                image_submit,
+                [
+                    description,
+                    score_caption(total_score, vqa_score, aesthetic_score, ocr_score),
+                    vqa_score_list_submit,
+                    char_in_submit
+                ],
+            )
             captioned_submit_image.save(
                 os.path.join(
                     id_folder, naming_template("submit", attempt, aesthetic_score)
+                ),
+            )
+            ## Generated image no caption
+            image_submit.save(
+                os.path.join(
+                    id_folder, naming_template("no_cap", attempt, aesthetic_score)
                 ),
             )
 
@@ -223,43 +256,43 @@ class ScoreEvaluation:
     def vqa_orc_evaluation(
         self,
         id_prompt: str = None,
-        images: list[Image.Image] = None,
+        image: Image.Image = None,
     ) -> dict:
         solution = self.data.get_solution(id_prompt)
 
         question = json.loads(solution.loc[0, "question"])
         choices = json.loads(solution.loc[0, "choices"])
-        answers = json.loads(solution.loc[0, "answers"])
+        answers = json.loads(solution.loc[0, "answer"])
 
-        results = {"images": [], "vqa_score": [], "ocr_score": [], "num_char": []}
+        results = {"images": None, "vqa_score": None, "ocr_score": None, "num_char": None}
 
         rng = np.random.RandomState(42)
         group_seed = rng.randint(0, np.iinfo(np.int32).max)
 
-        for i, image in enumerate(images):
-            image_processor = ImageProcessor(image=image, seed=group_seed).apply()
-            processed_image = image_processor.image.copy()
+        image_processor = ImageProcessor(image=image, seed=group_seed).apply()
+        processed_image = image_processor.image.copy()
 
-            vqa_score = self.vqa_evaluator(
-                image=processed_image,
-                question=question,
-                choices_list=choices,
-                answers=answers,
-            )
+        vqa_score = self.vqa_evaluator.score_batch(
+            image=processed_image,
+            questions=question,
+            choices_list=choices,
+            answers=answers,
+        )
 
-            reset_image = (
-                image_processor.reset()
-                .apply_random_crop_resize()
-                .apply_jpeg_compression(quality=90)
-            )
+        reset_image = (
+            image_processor.reset()
+            .apply_random_crop_resize()
+            .apply_jpeg_compression(quality=90)
+            .image
+        )
 
-            ocr_score, num_char = self.vqa_evaluator.ocr(
-                reset_image, free_chars=4, use_num_char=True
-            )
+        ocr_score, num_char = self.vqa_evaluator.ocr(
+            reset_image, free_chars=4, use_num_char=True
+        )
 
-            results["images"].append([processed_image, reset_image])
-            results["vqa_score"].append(vqa_score)
-            results["ocr_score"].append(ocr_score)
-            results["num_char"].append(num_char)
+        results["images"] = reset_image
+        results["vqa_score"] = vqa_score
+        results["ocr_score"] = ocr_score
+        results["num_char"] = num_char
 
         return results

@@ -203,4 +203,4 @@ class VQAEvaluator:
 
         # Exponentially decreasing towards 0.0 if more than free_chars detected
         # ---------------Modified Output----------------------
-        return min(1.0, math.exp(-num_char + free_chars)) if not use_num_char else (min(1.0, math.exp(-num_char + free_chars)), num_char)
+        return min(1.0, math.exp(-num_char + free_chars)) if not use_num_char else (min(1.0, math.exp(-num_char + free_chars)), decoded)
