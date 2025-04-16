@@ -1,0 +1,26 @@
+# config/versions.yaml
+
+version_11:
+  id_prompt: 11
+  method: "I->KMean->SVG"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)) of"
+  suffix_prompt: "with flat color blocks, high contrast, beautiful, outline only, no details, solid color only."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "Minimal_flat_icon_no_details-512x512-kmean"
+  height: 512
+  width: 512
+  num_inference_steps: 25
+  guidance_scale: 15.0
+  use_image_compression: true
+  k: 8
+  num_attempts: 1
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+

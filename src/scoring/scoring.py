@@ -1,17 +1,13 @@
 import ast
-import os
 import statistics
-import sys
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 import numpy as np
 import pandas as pd
 
-from src.data.image_processor import ImageProcessor, svg_to_png
-from src.data import svg_constraints
-
-from src.models.global_models import vqa_evaluator, aesthetic_evaluator
+from ..data.image_processor import ImageProcessor, svg_to_png
+from ..data.svg_constraints import SVGConstraints
+from ..evaluators.aesthetic import AestheticEvaluator
+from ..evaluators.vqa import VQAEvaluator
 
 
 class ParticipantVisibleError(Exception):
@@ -22,6 +18,8 @@ def score(
     solution: pd.DataFrame,
     submission: pd.DataFrame,
     row_id_column_name: str,
+    vqa_evaluator: VQAEvaluator,
+    aesthetic_evaluator: AestheticEvaluator,
     random_seed: int = 0,
 ) -> float:
     """Calculates a fidelity score by comparing generated SVG images to target text descriptions.
@@ -74,7 +72,7 @@ def score(
         raise ParticipantVisibleError("svg must be a string.")
 
     # Check that SVG code meets defined constraints
-    constraints = svg_constraints.SVGConstraints()
+    constraints = SVGConstraints()
     try:
         for svg in submission.loc[:, "svg"]:
             constraints.validate_svg(svg)
@@ -97,7 +95,8 @@ def score(
         ]
         svg = svg[0]  # unpack singleton from list
         group_seed = rng.randint(0, np.iinfo(np.int32).max)
-        image_processor = ImageProcessor(image=svg_to_png(svg), seed=group_seed).apply()
+        image_processor = ImageProcessor(
+            image=svg_to_png(svg), seed=group_seed).apply()
         image = image_processor.image.copy()
         aesthetic_score = aesthetic_evaluator.score(image)
         vqa_score = vqa_evaluator.score(questions, choices, answers, image)
@@ -105,7 +104,8 @@ def score(
             quality=90
         )
         ocr_score = vqa_evaluator.ocr(image_processor.image)
-        instance_score = harmonic_mean(vqa_score, aesthetic_score, beta=0.5) * ocr_score
+        instance_score = harmonic_mean(
+            vqa_score, aesthetic_score, beta=0.5) * ocr_score
         results.append(instance_score)
 
     # except:

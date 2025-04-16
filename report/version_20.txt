@@ -2,164 +2,164 @@
 
 Attempt 1/1
 Prompt ID: 02d892
-Description: a (purple) ((forest)) at (dusk)
-SVG Size: 5666 bytes
-- Total Score: 0.6905
-- VQA Score: 0.7996
-- Aesthetic Score: 0.4466
+Description: a purple forest at dusk
+SVG Size: 3991 bytes
+- Total Score: 0.8440
+- VQA Score: 0.9757
+- Aesthetic Score: 0.5482
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: 0dcd2e
-Description: (gray) (wool) ((coat)) with a (faux fur) (collar)
-SVG Size: 920 bytes
-- Total Score: 0.8113
-- VQA Score: 0.9548
-- Aesthetic Score: 0.5067
+Description: gray wool coat with a faux fur collar
+SVG Size: 2297 bytes
+- Total Score: 0.5960
+- VQA Score: 0.6527
+- Aesthetic Score: 0.4423
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: 1e9ac1
-Description: a ((lighthouse)) overlooking the (ocean)
-SVG Size: 1713 bytes
-- Total Score: 0.6652
-- VQA Score: 0.7497
-- Aesthetic Score: 0.4584
+Description: a lighthouse overlooking the ocean
+SVG Size: 1827 bytes
+- Total Score: 0.6431
+- VQA Score: 0.7363
+- Aesthetic Score: 0.4269
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: 2b25db
-Description: (burgundy) (corduroy) ((pants)) with (patch) (pockets) and (silver) (buttons)
-SVG Size: 9998 bytes
-- Total Score: 0.6678
-- VQA Score: 0.7440
-- Aesthetic Score: 0.4736
+Description: burgundy corduroy pants with patch pockets and silver buttons
+SVG Size: 9975 bytes
+- Total Score: 0.5658
+- VQA Score: 0.6027
+- Aesthetic Score: 0.4546
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: 4e6a54
-Description: (orange) (corduroy) ((overalls))
-SVG Size: 9990 bytes
-- Total Score: 0.4976
-- VQA Score: 0.5031
-- Aesthetic Score: 0.4769
+Description: orange corduroy overalls
+SVG Size: 9507 bytes
+- Total Score: 0.4151
+- VQA Score: 0.4127
+- Aesthetic Score: 0.4250
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: 4f1b00
-Description: a (purple) (silk) ((scarf)) with (tassel) (trim)
-SVG Size: 5294 bytes
-- Total Score: 0.5903
-- VQA Score: 0.6576
-- Aesthetic Score: 0.4189
+Description: a purple silk scarf with tassel trim
+SVG Size: 3439 bytes
+- Total Score: 0.4154
+- VQA Score: 0.4065
+- Aesthetic Score: 0.4551
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: 61b500
-Description: a (green) ((lagoon)) under a (cloudy) (sky)
-SVG Size: 1023 bytes
-- Total Score: 0.6514
-- VQA Score: 0.7620
-- Aesthetic Score: 0.4122
+Description: a green lagoon under a cloudy sky
+SVG Size: 1537 bytes
+- Total Score: 0.4944
+- VQA Score: 0.5073
+- Aesthetic Score: 0.4488
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: 65cc74
-Description: (crimson) ((rectangles)) forming a (chaotic) (grid)
-SVG Size: 5767 bytes
-- Total Score: 0.6500
-- VQA Score: 0.7264
-- Aesthetic Score: 0.4575
+Description: crimson rectangles forming a chaotic grid
+SVG Size: 9401 bytes
+- Total Score: 0.8078
+- VQA Score: 0.9969
+- Aesthetic Score: 0.4592
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: 7c4414
-Description: (purple) ((pyramids)) spiraling around a (bronze) (cone)
-SVG Size: 3478 bytes
-- Total Score: 0.6721
-- VQA Score: 0.7469
-- Aesthetic Score: 0.4798
+Description: purple pyramids spiraling around a bronze cone
+SVG Size: 9982 bytes
+- Total Score: 0.7831
+- VQA Score: 0.9741
+- Aesthetic Score: 0.4389
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: 996c3a
-Description: (magenta) ((trapezoids)) layered on a (transluscent) (silver) (sheet)
-SVG Size: 1251 bytes
-- Total Score: 0.5855
-- VQA Score: 0.6572
-- Aesthetic Score: 0.4077
+Description: magenta trapezoids layered on a transluscent silver sheet
+SVG Size: 6538 bytes
+- Total Score: 0.5742
+- VQA Score: 0.6149
+- Aesthetic Score: 0.4540
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: 9b71cc
-Description: a (snowy) ((plain))
-SVG Size: 6440 bytes
-- Total Score: 0.6537
-- VQA Score: 0.7045
-- Aesthetic Score: 0.5072
+Description: a snowy plain
+SVG Size: 4461 bytes
+- Total Score: 0.4811
+- VQA Score: 0.5048
+- Aesthetic Score: 0.4050
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: a395a3
-Description: (black and white) (checkered) ((pants))
-SVG Size: 9985 bytes
-- Total Score: 0.4812
-- VQA Score: 0.4994
-- Aesthetic Score: 0.4199
+Description: black and white checkered pants
+SVG Size: 9964 bytes
+- Total Score: 0.3340
+- VQA Score: 0.3112
+- Aesthetic Score: 0.4730
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: ad4c5c
-Description: a (starlit) (night) over (snow-covered) ((peaks))
-SVG Size: 2312 bytes
-- Total Score: 0.8528
-- VQA Score: 0.9992
-- Aesthetic Score: 0.5377
+Description: a starlit night over snow-covered peaks
+SVG Size: 4189 bytes
+- Total Score: 0.8269
+- VQA Score: 0.9988
+- Aesthetic Score: 0.4897
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: b679e3
-Description: (khaki) ((triangles)) and (azure) ((crescents))
-SVG Size: 1406 bytes
-- Total Score: 0.4353
-- VQA Score: 0.4296
-- Aesthetic Score: 0.4601
+Description: khaki triangles and azure crescents
+SVG Size: 3519 bytes
+- Total Score: 0.4616
+- VQA Score: 0.4754
+- Aesthetic Score: 0.4135
 - OCR Score: 1.0000
 ----------------------------------------
 ✅ New best result
 
 Attempt 1/1
 Prompt ID: f16e62
-Description: a (maroon) ((dodecahedron)) interwoven with (teal) (threads)
-SVG Size: 2323 bytes
-- Total Score: 0.4967
-- VQA Score: 0.5116
-- Aesthetic Score: 0.4448
+Description: a maroon dodecahedron interwoven with teal threads
+SVG Size: 3159 bytes
+- Total Score: 0.6700
+- VQA Score: 0.7600
+- Aesthetic Score: 0.4547
 - OCR Score: 1.0000
 ----------------------------------------

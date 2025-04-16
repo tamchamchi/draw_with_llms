@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 from PIL import Image
 
-from src.configs import MODEL_DIR
+from configs.configs import MODEL_DIR
 
 
 class AestheticPredictor(nn.Module):
