@@ -12,12 +12,6 @@ from transformers import (
     PaliGemmaForConditionalGeneration,
 )
 
-from huggingface_hub import login
-
-load_dotenv()
-HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
-login(token=HUGGINGFACE_API_KEY)
-
 
 class VQAEvaluator:
     """Evaluates images based on their similarity to a given text description using multiple choice questions."""
