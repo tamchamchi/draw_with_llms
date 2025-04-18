@@ -82,6 +82,7 @@ class ScoreEvaluator:
         height: int = 512,
         num_inference_steps: int = 25,
         guidance_scale: float = 15,
+        seed: int = 42
     ) -> Image.Image:
         """Generates an image based on the given prompt using Stable Diffusion v2"""
         return self.generator.generate(
@@ -91,6 +92,7 @@ class ScoreEvaluator:
             guidance_scale=guidance_scale,
             width=width,
             height=height,
+            seed=seed
         )
 
     def _process_image(
@@ -117,12 +119,11 @@ class ScoreEvaluator:
         bitmap: Image.Image,
         processed_image: Image.Image,
         description: str,
-        solution: pd.DataFrame,
         processing_strategy: ImageProcessingStrategy,
     ) -> dict:
         print("--- Template Step: Evaluate Results ---")
         results = {}
-
+        solution = self.data.get_solution(id_prompt)
         # Kiểm tra loại strategy để lấy điểm compressed_quality
         if isinstance(processing_strategy, CompressionStrategy):
             # Giả sử aesthetic_evaluator có thể đánh giá ảnh đã xử lý
@@ -162,7 +163,7 @@ class ScoreEvaluator:
         results["vqa_submit_scores"] = eval_vqa_submit.get("vqa_score", [])
         results["num_char_submit"] = eval_vqa_submit.get("num_char", 0)
         results["clip_similarity"] = self.aesthetic_evaluator.compute_clip_similarity(
-            image_submit, description
+            bitmap, description
         )
 
         print(
@@ -277,10 +278,7 @@ class ScoreEvaluator:
         current_total = current_eval_results["total_score"]
         current_clip = current_eval_results["clip_similarity"]
         is_better = False
-        if (
-            current_total > best_scores_tracking["best_total_score"]
-            and current_clip > best_scores_tracking["best_clip_similarity"]
-        ):
+        if current_clip > best_scores_tracking["best_clip_similarity"]:
             best_scores_tracking["best_total_score"] = current_total
             best_scores_tracking["best_vqa_score"] = current_eval_results["vqa_score"]
             best_scores_tracking["best_aesthetic_score"] = current_eval_results[
@@ -392,7 +390,6 @@ class ScoreEvaluator:
         # --- Setup (sử dụng _setup_directories đã cập nhật) ---
         id_folder = self._setup_directories(
             version, id_prompt, processing_strategy)
-        solution = self.data.get_solution(id_prompt)
         description = self.data.get_description_by_id(id_prompt)
         prompt = self._build_prompt(prefix_prompt, description, suffix_prompt)
 
@@ -428,20 +425,19 @@ class ScoreEvaluator:
                     height,
                     num_inference_steps,
                     guidance_scale,
+                    seed=attempt,
                 )
                 # !!! Gọi _process_image không cần truyền k vì strategy đã giữ nó !!!
                 processed_image = self._process_image(
                     bitmap, processing_strategy)
                 svg_content = self._convert_to_svg(
-                    processed_image, **bitmap2svg_config
-                )
+                    processed_image, **bitmap2svg_config)
                 evaluation_results = self._evaluate_results(
                     id_prompt,
                     svg_content,
                     bitmap,
                     processed_image,
                     description,
-                    solution,
                     processing_strategy,
                 )
                 # !!! image_submit được lấy từ evaluation_results để dùng trong _save_artifacts !!!

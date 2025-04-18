@@ -1,6 +1,63 @@
+import re
+
 import cv2
 import numpy as np
 from PIL import Image
+
+
+def add_manual_i_to_svg_no_group(
+    svg_content: str,
+    x: int = 50,  # Tọa độ X góc trên bên trái của chữ I
+    y: int = 50,  # Tọa độ Y góc trên bên trái của chữ I
+    width: int = 10,  # Chiều rộng của chữ I (thường hẹp)
+    height: int = 40,  # Chiều cao của chữ I
+    color: str = "red"  # Màu sắc của chữ I
+    # stroke_width không cần thiết nếu dùng fill
+) -> str:
+    """
+    Thêm chữ 'I' được vẽ thủ công bằng một <path> duy nhất vào nội dung SVG,
+    không sử dụng thẻ <g>.
+
+    Args:
+        svg_content: Chuỗi chứa nội dung của file SVG gốc.
+        x: Tọa độ X cho góc trên bên trái của chữ I.
+        y: Tọa độ Y cho góc trên bên trái của chữ I.
+        width: Chiều rộng của chữ I.
+        height: Chiều cao của chữ I.
+        color: Màu sắc của chữ I (ví dụ: 'purple', '#800080').
+
+    Returns:
+        Chuỗi chứa nội dung SVG mới với chữ I đã được thêm vào.
+
+    Raises:
+        ValueError: Nếu không tìm thấy thẻ đóng </svg> trong nội dung đầu vào.
+    """
+
+    # --- Định nghĩa hình dạng chữ I bằng một path hình chữ nhật ---
+    # M = MoveTo, H = Horizontal LineTo, V = Vertical LineTo, Z = ClosePath
+    path_d = f"M {x} {y} H {x + width} V {y + height} H {x} Z"
+
+    # --- Tạo phần tử SVG cho chữ I ---
+    # Tạo trực tiếp thẻ <path> với các thuộc tính
+    # Sử dụng fill để tô đặc, stroke="none" để không có viền.
+    # Nếu muốn chỉ có viền: fill="none" stroke="{color}" stroke-width="<value>"
+    attributes = f'fill="{color}" stroke="none"'
+    manual_i_element = f'\n  <path id="manual_I_{x}_{y}" d="{path_d}" {attributes} />\n'
+    # Thêm \n để định dạng dễ nhìn hơn trong file SVG kết quả
+
+    # --- Tìm vị trí chèn ---
+    # Tìm vị trí của thẻ đóng </svg> (không phân biệt chữ hoa/thường)
+    match = re.search(r"</svg>", svg_content, re.IGNORECASE)
+    if not match:
+        raise ValueError("Không tìm thấy thẻ đóng </svg> trong nội dung SVG.")
+
+    insert_pos = match.start()
+
+    # --- Chèn phần tử chữ I vào trước thẻ đóng ---
+    modified_svg_content = svg_content[:insert_pos] + \
+        manual_i_element + svg_content[insert_pos:]
+
+    return modified_svg_content
 
 
 def compress_hex_color(hex_color):
@@ -411,4 +468,4 @@ def bitmap_to_svg_layered(
     # utilization = (final_size / max_size_bytes) * 100
     # print(f"SVG generated. Size: {final_size} bytes. Utilization: {utilization:.2f}%")
 
-    return svg
+    return add_manual_i_to_svg_no_group(svg)
