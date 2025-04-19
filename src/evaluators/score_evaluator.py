@@ -277,8 +277,12 @@ class ScoreEvaluator:
         # ... (Logic cập nhật điểm như code trước) ...
         current_total = current_eval_results["total_score"]
         current_clip = current_eval_results["clip_similarity"]
+        current_aesthetic = current_eval_results["aesthetic_score"]
         is_better = False
-        if current_clip > best_scores_tracking["best_clip_similarity"]:
+        if (
+            current_clip > best_scores_tracking["best_clip_similarity"]
+            # and current_aesthetic > best_scores_tracking["best_aesthetic_score"]
+        ):
             best_scores_tracking["best_total_score"] = current_total
             best_scores_tracking["best_vqa_score"] = current_eval_results["vqa_score"]
             best_scores_tracking["best_aesthetic_score"] = current_eval_results[
@@ -425,7 +429,7 @@ class ScoreEvaluator:
                     height,
                     num_inference_steps,
                     guidance_scale,
-                    seed=attempt,
+                    seed=int(random_seed + attempt),
                 )
                 # !!! Gọi _process_image không cần truyền k vì strategy đã giữ nó !!!
                 processed_image = self._process_image(

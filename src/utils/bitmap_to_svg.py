@@ -11,7 +11,7 @@ def add_manual_i_to_svg_no_group(
     y: int = 50,  # Tọa độ Y góc trên bên trái của chữ I
     width: int = 10,  # Chiều rộng của chữ I (thường hẹp)
     height: int = 40,  # Chiều cao của chữ I
-    color: str = "red"  # Màu sắc của chữ I
+    color: str = "black"  # Màu sắc của chữ I
     # stroke_width không cần thiết nếu dùng fill
 ) -> str:
     """

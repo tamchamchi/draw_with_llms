@@ -1,12 +1,108 @@
 # config/versions.yaml
 version_1:
   id_prompt: 1
-  method: "I->KMean->SVG + CLIP + Text_Insert"   
+  method: "I->KMean->SVG + CLIP + Text_Insert + Aesthetic"   
   model: "StableDiffusionV2"  
   prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)) of"
   suffix_prompt: "with flat color blocks, high contrast, beautiful, outline only, no details, solid color only."
   negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
   version_description: "version_1"
+  height: 768
+  width: 768
+  num_inference_steps: 25
+  guidance_scale: 15.0
+  use_image_compression: true
+  k: 8
+  num_attempts: 3
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+
+version_2:
+  id_prompt: 1
+  method: "I->KMean->SVG + CLIP + Aesthetic"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)) of"
+  suffix_prompt: "with flat color blocks, high contrast, beautiful, outline only, no details, solid color only."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_2"
+  height: 768
+  width: 768
+  num_inference_steps: 25
+  guidance_scale: 15.0
+  use_image_compression: true
+  k: 8
+  num_attempts: 3
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+
+version_3:
+  id_prompt: 1
+  method: "I->KMean->SVG + CLIP + Text_Insert"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)) of"
+  suffix_prompt: "with flat color blocks, high contrast, beautiful, outline only, no details, solid color only."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_3"
+  height: 768
+  width: 768
+  num_inference_steps: 25
+  guidance_scale: 15.0
+  use_image_compression: true
+  k: 8
+  num_attempts: 3
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+
+version_4:
+  id_prompt: 1
+  method: "I->KMean->SVG + CLIP + Text_Insert"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)) of"
+  suffix_prompt: "with flat color blocks, high contrast, beautiful, outline only, no details, solid color only."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_4"
+  height: 768
+  width: 768
+  num_inference_steps: 35
+  guidance_scale: 15.0
+  use_image_compression: true
+  k: 8
+  num_attempts: 3
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+
+version_5:
+  id_prompt: 1
+  method: "I->KMean->SVG"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)) of"
+  suffix_prompt: "with flat color blocks, high contrast, beautiful, outline only, no details, solid color only."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_5"
   height: 768
   width: 768
   num_inference_steps: 25
@@ -22,4 +118,53 @@ version_1:
     target_size: [384, 384]
     adaptive_fill: true
     num_color: 12
+
+version_6:
+  id_prompt: 1
+  method: "I->KMean->SVG + CLIP + Text_Insert"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)) of"
+  suffix_prompt: "with flat color blocks, high contrast, beautiful, outline only, no details, solid color only."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_6"
+  height: 768
+  width: 768
+  num_inference_steps: 25
+  guidance_scale: 15.0
+  use_image_compression: true
+  k: 8
+  num_attempts: 4
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+
+version_7:
+  id_prompt: 1
+  method: "I->KMean->SVG + CLIP + Text_Insert + Aesthetic"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)) of"
+  suffix_prompt: "with flat color blocks, high contrast, beautiful, outline only, no details, solid color only."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_7"
+  height: 768
+  width: 768
+  num_inference_steps: 25
+  guidance_scale: 15.0
+  use_image_compression: true
+  k: 8
+  num_attempts: 4
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+
 
