@@ -468,4 +468,5 @@ def bitmap_to_svg_layered(
     # utilization = (final_size / max_size_bytes) * 100
     # print(f"SVG generated. Size: {final_size} bytes. Utilization: {utilization:.2f}%")
 
-    return add_manual_i_to_svg_no_group(svg)
+    return  add_manual_i_to_svg_no_group(svg)
+    # return svg

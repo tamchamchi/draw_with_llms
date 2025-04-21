@@ -16,6 +16,7 @@ class StableDiffusionV2:
             scheduler=self.scheduler,
             torch_dtype=torch.float16,
             variant="fp16",
+            local_files_only=True
         ).to(self.device)
 
     def generate(

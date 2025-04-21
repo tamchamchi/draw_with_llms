@@ -429,7 +429,7 @@ class ScoreEvaluator:
                     height,
                     num_inference_steps,
                     guidance_scale,
-                    seed=int(random_seed + attempt),
+                    seed= random_seed + attempt,
                 )
                 # !!! Gọi _process_image không cần truyền k vì strategy đã giữ nó !!!
                 processed_image = self._process_image(
