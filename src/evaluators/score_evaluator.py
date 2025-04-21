@@ -281,7 +281,7 @@ class ScoreEvaluator:
         is_better = False
         if (
             current_clip > best_scores_tracking["best_clip_similarity"]
-            # and current_aesthetic > best_scores_tracking["best_aesthetic_score"]
+            and current_aesthetic > best_scores_tracking["best_aesthetic_score"]
         ):
             best_scores_tracking["best_total_score"] = current_total
             best_scores_tracking["best_vqa_score"] = current_eval_results["vqa_score"]

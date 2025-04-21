@@ -215,4 +215,101 @@ version_9:
     adaptive_fill: true
     num_color: 12
 
+version_10:
+  id_prompt: 1
+  method: "I->KMean->SVG + CLIP + Text_Insert"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)) of"
+  suffix_prompt: "with flat color blocks, high contrast, beautiful, outline only, no details, solid color only."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_10"
+  height: 512
+  width: 512
+  num_inference_steps: 50
+  guidance_scale: 15.0
+  use_image_compression: true
+  k: 8
+  num_attempts: 3
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+
+version_11:
+  id_prompt: 2
+  method: "I->KMean->SVG + CLIP + Text_Insert + Aesthetic"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)), nostalgic feeling, soft warm light, of"
+  suffix_prompt: "with flat color blocks, high contrast, beautiful, outline only, no details, solid color only."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_11"
+  height: 768
+  width: 768
+  num_inference_steps: 25
+  guidance_scale: 15.0
+  use_image_compression: true
+  k: 8
+  num_attempts: 3
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+
+version_12:
+  id_prompt: 3
+  method: "I->KMean->SVG + CLIP + Text_Insert + Aesthetic"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)), nostalgic feeling, soft warm light, of"
+  suffix_prompt: "with flat color blocks, high contrast, watercolor illustration, romantic and dreamy mood."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_12"
+  height: 768
+  width: 768
+  num_inference_steps: 25
+  guidance_scale: 15.0
+  use_image_compression: true
+  k: 8
+  num_attempts: 3
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+
+
+version_13:
+  id_prompt: 4
+  method: "I->KMean->SVG + CLIP + Text_Insert + Aesthetic"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Minimal illustration, flat vector icon, nostalgic feeling, soft warm light, of"
+  suffix_prompt: "with high contrast, watercolor illustration, romantic and dreamy mood, dreamy lighting, impressionist atmosphere."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_13"
+  height: 768
+  width: 768
+  num_inference_steps: 25
+  guidance_scale: 15.0
+  use_image_compression: true
+  k: 8
+  num_attempts: 3
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+
 

@@ -5,25 +5,35 @@
 --- Điểm trung bình của từng file JSON ---
 --- Đang tính điểm trung bình cho từng file JSON trong: data/results/score/json ---
   Processing version_1.json (list of 15 items)...
+  Processing version_10.json (list of 15 items)...
+  Processing version_11.json (list of 15 items)...
+  Processing version_12.json (list of 15 items)...
+  Processing version_13.json (list of 15 items)...
   Processing version_2.json (list of 15 items)...
   Processing version_3.json (list of 15 items)...
   Processing version_4.json (list of 15 items)...
+  Processing version_5.json (list of 15 items)...
   Processing version_6.json (list of 15 items)...
   Processing version_7.json (list of 15 items)...
   Processing version_8.json (list of 15 items)...
   Processing version_9.json (list of 15 items)...
-+----------------+-------------------+-----------------+-----------------------+-----------------+
-| filename       |   avg_total_score |   avg_vqa_score |   avg_aesthetic_score |   avg_ocr_score |
-|----------------+-------------------+-----------------+-----------------------+-----------------|
-| version_1.json |            0.6281 |          0.7086 |                0.4538 |          1.0000 |
-| version_2.json |            0.6235 |          0.6979 |                0.4705 |          1.0000 |
-| version_3.json |            0.6273 |          0.7316 |                0.4261 |          1.0000 |
-| version_4.json |            0.6439 |          0.7386 |                0.4417 |          1.0000 |
-| version_6.json |            0.6254 |          0.7289 |                0.4290 |          1.0000 |
-| version_7.json |            0.6262 |          0.7093 |                0.4572 |          1.0000 |
-| version_8.json |            0.5001 |          0.6085 |                0.4377 |          0.9338 |
-| version_9.json |            0.5503 |          0.6094 |                0.4282 |          1.0000 |
-+----------------+-------------------+-----------------+-----------------------+-----------------+
++-----------------+-------------------+-----------------+-----------------------+-----------------+
+| filename        |   avg_total_score |   avg_vqa_score |   avg_aesthetic_score |   avg_ocr_score |
+|-----------------+-------------------+-----------------+-----------------------+-----------------|
+| version_1.json  |            0.6281 |          0.7086 |                0.4538 |          1.0000 |
+| version_10.json |            0.6535 |          0.7529 |                0.4486 |          1.0000 |
+| version_11.json |            0.5840 |          0.6515 |                0.4575 |          1.0000 |
+| version_12.json |            0.6948 |          0.8030 |                0.4607 |          1.0000 |
+| version_13.json |            0.6609 |          0.7498 |                0.4662 |          1.0000 |
+| version_2.json  |            0.6235 |          0.6979 |                0.4705 |          1.0000 |
+| version_3.json  |            0.6273 |          0.7316 |                0.4261 |          1.0000 |
+| version_4.json  |            0.6439 |          0.7386 |                0.4417 |          1.0000 |
+| version_5.json  |            0.0000 |          0.0000 |                0.0000 |          0.0000 |
+| version_6.json  |            0.6254 |          0.7289 |                0.4290 |          1.0000 |
+| version_7.json  |            0.6262 |          0.7093 |                0.4572 |          1.0000 |
+| version_8.json  |            0.5001 |          0.6085 |                0.4377 |          0.9338 |
+| version_9.json  |            0.5503 |          0.6094 |                0.4282 |          1.0000 |
++-----------------+-------------------+-----------------+-----------------------+-----------------+
 
 Đang lưu bảng trung bình từng file vào: data/results/score/per_file_averages.csv
 Lưu thành công.
@@ -33,10 +43,10 @@ Lưu thành công.
 +-------------------------------------------------------------------------+---------------+-------------+-------------------+-------------+
 |                                                                         |   total_score |   vqa_score |   aesthetic_score |   ocr_score |
 |-------------------------------------------------------------------------+---------------+-------------+-------------------+-------------|
+| ('I->KMean->SVG', 'StableDiffusionV2')                                  |        0.0000 |      0.0000 |            0.0000 |      0.0000 |
 | ('I->KMean->SVG + CLIP + Aesthetic', 'StableDiffusionV2')               |        0.6235 |      0.6979 |            0.4705 |      1.0000 |
-| ('I->KMean->SVG + CLIP + Text_Insert', 'StableDiffusionV2')             |        0.6117 |      0.7021 |            0.4312 |      1.0000 |
-| ('I->KMean->SVG + CLIP + Text_Insert + Aesthetic', 'StableDiffusionV2') |        0.5848 |      0.6755 |            0.4496 |      0.9779 |
+| ('I->KMean->SVG + CLIP + Text_Insert', 'StableDiffusionV2')             |        0.6201 |      0.7123 |            0.4347 |      1.0000 |
+| ('I->KMean->SVG + CLIP + Text_Insert + Aesthetic', 'StableDiffusionV2') |        0.6157 |      0.7051 |            0.4555 |      0.9890 |
 +-------------------------------------------------------------------------+---------------+-------------+-------------------+-------------+
 
 --- Script hoàn thành ---
-
