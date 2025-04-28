@@ -12,7 +12,7 @@ from configs.configs import RESULTS_DIR
 from ..data.data_loader import Data
 from ..data.image_processor import ImageProcessor, svg_to_png
 from ..scoring.scoring import score
-from ..strategies.base import ImageProcessingStrategy
+from ..strategies.base import ImageProcessingStrategy, PromptBuildingStrategy
 from ..strategies.image_processing.compression import CompressionStrategy
 from ..strategies.image_processing.no_compression import NoCompressionStrategy
 from ..utils.bitmap_to_svg import bitmap_to_svg_layered
@@ -29,6 +29,7 @@ class ScoreEvaluator:
         aesthetic_evaluator: AestheticEvaluator,
         generator: None,
         data: Data,
+        prompt_builder: PromptBuildingStrategy,
         seed: int = 42,
     ):
         # Dependency Injection
@@ -36,6 +37,7 @@ class ScoreEvaluator:
         self.aesthetic_evaluator = aesthetic_evaluator
         self.generator = generator
         self.data = data
+        self.prompt_builder = prompt_builder
         self._set_random_seed(seed)
 
     def _set_random_seed(self, seed: int = 42) -> None:
@@ -59,8 +61,7 @@ class ScoreEvaluator:
         else:
             strategy_suffix = "-unknown_processing"
 
-        version_folder = os.path.join(
-            RESULTS_DIR, f"{version}-{strategy_suffix}")
+        version_folder = os.path.join(RESULTS_DIR, f"{version}-{strategy_suffix}")
         id_folder = os.path.join(version_folder, str(id_prompt))
 
         os.makedirs(id_folder, exist_ok=True)
@@ -71,6 +72,7 @@ class ScoreEvaluator:
         prefix_prompt: str = None,
         description: str = None,
         suffix_prompt: str = None,
+        negative_prompt: str = None,
     ) -> str:
         return f"{prefix_prompt} {description} {suffix_prompt}".strip()
 
@@ -82,7 +84,7 @@ class ScoreEvaluator:
         height: int = 512,
         num_inference_steps: int = 25,
         guidance_scale: float = 15,
-        seed: int = 42
+        seed: int = 42,
     ) -> Image.Image:
         """Generates an image based on the given prompt using Stable Diffusion v2"""
         return self.generator.generate(
@@ -92,7 +94,7 @@ class ScoreEvaluator:
             guidance_scale=guidance_scale,
             width=width,
             height=height,
-            seed=seed
+            seed=seed,
         )
 
     def _process_image(
@@ -232,8 +234,7 @@ class ScoreEvaluator:
             )
             save_path = os.path.join(
                 id_folder,
-                naming_template(
-                    f"compressed_{k_value}", attempt, compressed_quality),
+                naming_template(f"compressed_{k_value}", attempt, compressed_quality),
             )
             captioned_processed.save(save_path)
             print(f"    Saved: {save_path}")
@@ -248,18 +249,15 @@ class ScoreEvaluator:
         print(f"    Saved: {save_path}")
         captioned_submit = add_caption_to_image(
             image_submit,
-            [description, main_scores_str,
-                f"VQA: {vqa_submit_str}", char_submit_str],
+            [description, main_scores_str, f"VQA: {vqa_submit_str}", char_submit_str],
         )
         save_path = os.path.join(
-            id_folder, naming_template(
-                "submit", attempt, aesthetic_score_submit)
+            id_folder, naming_template("submit", attempt, aesthetic_score_submit)
         )
         captioned_submit.save(save_path)
         print(f"Saved: {save_path}")
         save_path = os.path.join(
-            id_folder, naming_template(
-                "no_cap", attempt, aesthetic_score_submit)
+            id_folder, naming_template("no_cap", attempt, aesthetic_score_submit)
         )
         image_submit.save(save_path)
         print(f"Saved: {save_path}")
@@ -267,8 +265,7 @@ class ScoreEvaluator:
         svg_path = os.path.join(id_folder, svg_filename)
         with open(svg_path, "w", encoding="utf-8") as f:
             f.write(svg_content)
-        print(
-            f"Saved: {svg_path} (Size: {len(svg_content.encode('utf-8'))} bytes)")
+        print(f"Saved: {svg_path} (Size: {len(svg_content.encode('utf-8'))} bytes)")
 
     def _update_best_score(
         self, current_eval_results: dict, best_scores_tracking: dict, verbose: bool
@@ -313,8 +310,7 @@ class ScoreEvaluator:
         rng = np.random.RandomState(42)
         group_seed = rng.randint(0, np.iinfo(np.int32).max)
         try:
-            image_processor = ImageProcessor(
-                image=image, seed=group_seed).apply()
+            image_processor = ImageProcessor(image=image, seed=group_seed).apply()
             processed_image_vqa = image_processor.image.copy()
             vqa_score = self.vqa_evaluator.score_batch(
                 image=processed_image_vqa,
@@ -351,6 +347,7 @@ class ScoreEvaluator:
         num_inference_steps: int = 25,
         guidance_scale: float = 15,
         use_image_compression: bool = False,
+        use_prompt_builder: bool = False,
         compression_k: int = 8,  # !!! THAM SỐ MỚI CHO KHI NÉN !!!
         version: str = "v1.0",
         num_attempts: int = 1,
@@ -392,14 +389,42 @@ class ScoreEvaluator:
         print(f"--- Using Strategy: {type(processing_strategy).__name__} ---")
 
         # --- Setup (sử dụng _setup_directories đã cập nhật) ---
-        id_folder = self._setup_directories(
-            version, id_prompt, processing_strategy)
+        id_folder = self._setup_directories(version, id_prompt, processing_strategy)
         description = self.data.get_description_by_id(id_prompt)
-        prompt = self._build_prompt(prefix_prompt, description, suffix_prompt)
+        # prompt = self._build_prompt(prefix_prompt, description, suffix_prompt, negative_prompt)
+
+        # --- !!! Xây dựng Prompt bằng Strategy !!! ---
+        if use_prompt_builder:
+            print(
+                f"--- Building prompt using strategy: {type(self.prompt_builder).__name__} ---"
+            )
+            try:
+                prompt_data = self.prompt_builder.build(
+                    description=description,
+                )
+                final_prompt = prompt_data.get("prompt")
+                final_negative_prompt = prompt_data.get("negative_prompt")
+                if not final_prompt:
+                    raise ValueError(
+                        "Prompt building strategy did not return a valid 'prompt'."
+                    )
+            except Exception as e_prompt:
+                print(f"🚨 Error during prompt building for ID {id_prompt}: {e_prompt}")
+                return {
+                    "status": "FAILED",
+                    "error": f"Prompt building error: {e_prompt}",
+                    "id_desc": id_prompt,
+                    "description": description,
+                }
+        else:
+            final_prompt = self._build_prompt(
+                prefix_prompt, description, suffix_prompt, negative_prompt
+            )
+            final_negative_prompt = negative_prompt
 
         if verbose:
-            print(f"Full Prompt: {prompt}")
-            print(f"Negative Prompt: {negative_prompt}")
+            print(f"Full Prompt: {final_prompt}")
+            print(f"Negative Prompt: {final_negative_prompt}")
             print(
                 f"Parameters: W={width}, H={height}, SVG Colors={bitmap2svg_config.get('num_color', 12)}, Steps={num_inference_steps}, Scale={guidance_scale}"
             )
@@ -423,19 +448,17 @@ class ScoreEvaluator:
             print(f"\n--- Attempt {attempt + 1}/{num_attempts} ---")
             try:
                 bitmap = self._generate_bitmap(
-                    prompt,
-                    negative_prompt,
+                    final_prompt,
+                    final_negative_prompt,
                     width,
                     height,
                     num_inference_steps,
                     guidance_scale,
-                    seed= random_seed + attempt,
+                    seed=random_seed + attempt,
                 )
                 # !!! Gọi _process_image không cần truyền k vì strategy đã giữ nó !!!
-                processed_image = self._process_image(
-                    bitmap, processing_strategy)
-                svg_content = self._convert_to_svg(
-                    processed_image, **bitmap2svg_config)
+                processed_image = self._process_image(bitmap, processing_strategy)
+                svg_content = self._convert_to_svg(processed_image, **bitmap2svg_config)
                 evaluation_results = self._evaluate_results(
                     id_prompt,
                     svg_content,
@@ -473,8 +496,7 @@ class ScoreEvaluator:
 
         # --- Final Results Packaging (cập nhật method name) ---
         print(f"\n===== Evaluation Finished for ID: {id_prompt} =====")
-        method_name = type(
-            processing_strategy).__name__.replace("Strategy", "")
+        method_name = type(processing_strategy).__name__.replace("Strategy", "")
         if isinstance(processing_strategy, CompressionStrategy):
             method_name += f"_k{processing_strategy.k}"
 

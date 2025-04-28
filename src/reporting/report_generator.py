@@ -64,9 +64,9 @@ class Report:
 
         per_file_avg_list = []
         # Các cột điểm cần tính trung bình
-        score_columns = ["total_score", "vqa_score", "aesthetic_score", "ocr_score"]
+        # score_columns = ["total_score", "vqa_score", "aesthetic_score", "ocr_score"]
         # Có thể thêm các cột khác nếu muốn, ví dụ clip_similarity
-        # score_columns = ["total_score", "vqa_score", "aesthetic_score", "ocr_score", "clip_similarity"]
+        score_columns = ["total_score", "vqa_score", "aesthetic_score", "ocr_score", "clip_similarity"]
 
         print(f"--- Đang tính điểm trung bình cho từng file JSON trong: {self.results_path} ---")
 
@@ -121,7 +121,7 @@ class Report:
             return pd.DataFrame() # Trả về DataFrame rỗng
 
         # Tạo DataFrame cuối cùng
-        final_df = pd.DataFrame(per_file_avg_list)
+        final_df = pd.DataFrame(per_file_avg_list).sort_values("avg_total_score", ascending=False)
         return final_df
 
     def get_json_data_by_file(self) -> Dict[str, Union[List, Dict, Any]]:

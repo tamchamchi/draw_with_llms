@@ -6,6 +6,7 @@ import os
 import argparse
 import json
 import yaml
+
 # --- Import các lớp/hàm thực tế ---
 try:
     sys.path.append(os.path.abspath(
@@ -18,6 +19,9 @@ try:
         StableDiffusionV2,
     )  # Hoặc model bạn dùng
     from src.data.data_loader import Data  # Lớp xử lý data
+    from src.strategies.build_prompt.categorized_prompt_strategy import (
+        CategorizedPromptStrategy,
+    )
 
     # Import đường dẫn dữ liệu thô
     from configs.configs import RAW_DATA_DIR, YAML_CONFIG_FILE
@@ -92,6 +96,9 @@ def main():
     parser.add_argument(
         "--use_image_compression", action=argparse.BooleanOptionalAction, default=None
     )
+    parser.add_argument(
+        "--use_prompt_builder", action=argparse.BooleanOptionalAction, default=None
+    )
     parser.add_argument("--k", type=int, default=None)
     parser.add_argument("--num_attempts", type=int, default=None)
     parser.add_argument("--random_seed", type=int, default=None)
@@ -153,6 +160,7 @@ def main():
         aesthetic_evaluator = AestheticEvaluator()
         generator = StableDiffusionV2()
         data = Data(TRAIN_DATA_PATH, QUESTION_DATA_PATH)
+        prompt_builder = CategorizedPromptStrategy()
     except Exception as e:
         print(f"Lỗi khởi tạo dependencies: {e}")
         import traceback
@@ -163,7 +171,8 @@ def main():
     print("--- Khởi tạo ScoreEvaluator ---")
     try:
         evaluator = ScoreEvaluator(
-            vqa_evaluator, aesthetic_evaluator, generator, data)
+            vqa_evaluator, aesthetic_evaluator, generator, data, prompt_builder
+        )
     except Exception as e:
         print(f"Lỗi khởi tạo ScoreEvaluator: {e}")
         import traceback
@@ -197,6 +206,10 @@ def main():
     final_verbose = (
         args.verbose if args.verbose is not None else yaml_params.get(
             "verbose", False)
+    )
+    final_use_prompt_builder = (
+        args.use_prompt_builder if args.use_prompt_builder is not None else yaml_params.get(
+            "use_prompt_builder", False)
     )
     final_use_compression = (
         args.use_image_compression
@@ -250,6 +263,7 @@ def main():
         "num_inference_steps": args.num_inference_steps,
         "guidance_scale": args.guidance_scale,
         "use_image_compression": final_use_compression,
+        "use_prompt_builder": final_use_prompt_builder,
         "compression_k": final_k,
         "bitmap2svg_config": final_bitmap2svg_config,
         "version": output_version_name,  # Dùng cho thư mục output bên trong ScoreEvaluator
@@ -267,6 +281,7 @@ def main():
         "num_inference_steps",
         "guidance_scale",
         "use_image_compression",
+        "use_prompt_builder",
         "num_attempts",
         "random_seed",
     ]

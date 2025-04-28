@@ -4,12 +4,24 @@
 ======================================================================
 --- Điểm trung bình của từng file JSON ---
 --- Đang tính điểm trung bình cho từng file JSON trong: data/results/score/json ---
+  Processing version_0.599.json (list of 15 items)...
   Processing version_1.json (list of 15 items)...
   Processing version_10.json (list of 15 items)...
   Processing version_11.json (list of 15 items)...
   Processing version_12.json (list of 15 items)...
   Processing version_13.json (list of 15 items)...
+  Processing version_14.json (list of 15 items)...
+  Processing version_15.json (list of 15 items)...
+  Processing version_16.json (list of 15 items)...
+  Processing version_17.json (list of 15 items)...
+  Processing version_18.json (list of 15 items)...
+  Processing version_19.json (list of 15 items)...
   Processing version_2.json (list of 15 items)...
+  Processing version_20.json (list of 15 items)...
+  Processing version_21.json (list of 15 items)...
+  Processing version_22.json (list of 15 items)...
+  Processing version_23.json (list of 15 items)...
+  Processing version_24.json (list of 15 items)...
   Processing version_3.json (list of 15 items)...
   Processing version_4.json (list of 15 items)...
   Processing version_5.json (list of 15 items)...
@@ -17,23 +29,35 @@
   Processing version_7.json (list of 15 items)...
   Processing version_8.json (list of 15 items)...
   Processing version_9.json (list of 15 items)...
-+-----------------+-------------------+-----------------+-----------------------+-----------------+
-| filename        |   avg_total_score |   avg_vqa_score |   avg_aesthetic_score |   avg_ocr_score |
-|-----------------+-------------------+-----------------+-----------------------+-----------------|
-| version_1.json  |            0.6281 |          0.7086 |                0.4538 |          1.0000 |
-| version_10.json |            0.6535 |          0.7529 |                0.4486 |          1.0000 |
-| version_11.json |            0.5840 |          0.6515 |                0.4575 |          1.0000 |
-| version_12.json |            0.6948 |          0.8030 |                0.4607 |          1.0000 |
-| version_13.json |            0.6609 |          0.7498 |                0.4662 |          1.0000 |
-| version_2.json  |            0.6235 |          0.6979 |                0.4705 |          1.0000 |
-| version_3.json  |            0.6273 |          0.7316 |                0.4261 |          1.0000 |
-| version_4.json  |            0.6439 |          0.7386 |                0.4417 |          1.0000 |
-| version_5.json  |            0.0000 |          0.0000 |                0.0000 |          0.0000 |
-| version_6.json  |            0.6254 |          0.7289 |                0.4290 |          1.0000 |
-| version_7.json  |            0.6262 |          0.7093 |                0.4572 |          1.0000 |
-| version_8.json  |            0.5001 |          0.6085 |                0.4377 |          0.9338 |
-| version_9.json  |            0.5503 |          0.6094 |                0.4282 |          1.0000 |
-+-----------------+-------------------+-----------------+-----------------------+-----------------+
++--------------------+-------------------+-----------------+-----------------------+-----------------+-----------------------+
+| filename           |   avg_total_score |   avg_vqa_score |   avg_aesthetic_score |   avg_ocr_score |   avg_clip_similarity |
+|--------------------+-------------------+-----------------+-----------------------+-----------------+-----------------------|
+| version_12.json    |            0.6948 |          0.8030 |                0.4607 |          1.0000 |               52.6823 |
+| version_20.json    |            0.6925 |          0.7908 |                0.4754 |          1.0000 |               55.9813 |
+| version_24.json    |            0.6656 |          0.7569 |                0.4705 |          1.0000 |               53.8188 |
+| version_13.json    |            0.6609 |          0.7498 |                0.4662 |          1.0000 |               55.3229 |
+| version_10.json    |            0.6535 |          0.7529 |                0.4486 |          1.0000 |               54.0708 |
+| version_16.json    |            0.6524 |          0.7353 |                0.4582 |          1.0000 |               54.7542 |
+| version_0.599.json |            0.6481 |          0.7430 |                0.4548 |          1.0000 |               55.7563 |
+| version_4.json     |            0.6439 |          0.7386 |                0.4417 |          1.0000 |               59.0063 |
+| version_14.json    |            0.6419 |          0.7140 |                0.4821 |          1.0000 |               54.7781 |
+| version_18.json    |            0.6395 |          0.7139 |                0.4619 |          1.0000 |               54.5146 |
+| version_15.json    |            0.6348 |          0.7160 |                0.4581 |          1.0000 |               53.4417 |
+| version_1.json     |            0.6281 |          0.7086 |                0.4538 |          1.0000 |               56.7208 |
+| version_3.json     |            0.6273 |          0.7316 |                0.4261 |          1.0000 |               59.6646 |
+| version_23.json    |            0.6269 |          0.7064 |                0.4657 |          1.0000 |               54.2292 |
+| version_7.json     |            0.6262 |          0.7093 |                0.4572 |          1.0000 |               56.1437 |
+| version_6.json     |            0.6254 |          0.7289 |                0.4290 |          1.0000 |               59.6646 |
+| version_17.json    |            0.6246 |          0.7056 |                0.4649 |          1.0000 |               53.4688 |
+| version_2.json     |            0.6235 |          0.6979 |                0.4705 |          1.0000 |               56.2854 |
+| version_22.json    |            0.6206 |          0.6948 |                0.4467 |          1.0000 |               50.8823 |
+| version_21.json    |            0.6133 |          0.6778 |                0.4563 |          1.0000 |               53.5875 |
+| version_11.json    |            0.5840 |          0.6515 |                0.4575 |          1.0000 |               52.0958 |
+| version_19.json    |            0.5662 |          0.6685 |                0.4458 |          0.9579 |               50.0583 |
+| version_9.json     |            0.5503 |          0.6094 |                0.4282 |          1.0000 |               53.7146 |
+| version_8.json     |            0.5001 |          0.6085 |                0.4377 |          0.9338 |               49.7062 |
+| version_5.json     |            0.0000 |          0.0000 |                0.0000 |          0.0000 |                0.0000 |
++--------------------+-------------------+-----------------+-----------------------+-----------------+-----------------------+
 
 Đang lưu bảng trung bình từng file vào: data/results/score/per_file_averages.csv
 Lưu thành công.
@@ -45,8 +69,8 @@ Lưu thành công.
 |-------------------------------------------------------------------------+---------------+-------------+-------------------+-------------|
 | ('I->KMean->SVG', 'StableDiffusionV2')                                  |        0.0000 |      0.0000 |            0.0000 |      0.0000 |
 | ('I->KMean->SVG + CLIP + Aesthetic', 'StableDiffusionV2')               |        0.6235 |      0.6979 |            0.4705 |      1.0000 |
-| ('I->KMean->SVG + CLIP + Text_Insert', 'StableDiffusionV2')             |        0.6201 |      0.7123 |            0.4347 |      1.0000 |
-| ('I->KMean->SVG + CLIP + Text_Insert + Aesthetic', 'StableDiffusionV2') |        0.6157 |      0.7051 |            0.4555 |      0.9890 |
+| ('I->KMean->SVG + CLIP + Text_Insert', 'StableDiffusionV2')             |        0.6233 |      0.7125 |            0.4392 |      1.0000 |
+| ('I->KMean->SVG + CLIP + Text_Insert + Aesthetic', 'StableDiffusionV2') |        0.6283 |      0.7141 |            0.4595 |      0.9936 |
 +-------------------------------------------------------------------------+---------------+-------------+-------------------+-------------+
 
 --- Script hoàn thành ---
