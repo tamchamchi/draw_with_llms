@@ -606,3 +606,105 @@ version_24:
     target_size: [384, 384]
     adaptive_fill: true
     num_color: 12
+
+version_25:
+  id_prompt: 3
+  method: "I->KMean->SVG + CLIP + Text_Insert + Aesthetic"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)), nostalgic feeling, soft warm light, of"
+  suffix_prompt: "with flat color blocks, high contrast, watercolor illustration, romantic and dreamy mood."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_25"
+  height: 768
+  width: 768
+  num_inference_steps: 25
+  guidance_scale: 15.0
+  use_image_compression: true
+  use_prompt_builder: false
+  similarity_strategy: image-reward
+  k: 8
+  num_attempts: 3
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+
+version_26: # same v12 but k = 4
+  id_prompt: 3
+  method: "I->KMean->SVG + CLIP + Text_Insert + Aesthetic"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)), nostalgic feeling, soft warm light, of"
+  suffix_prompt: "with flat color blocks, high contrast, watercolor illustration, romantic and dreamy mood."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_26"
+  height: 768
+  width: 768
+  num_inference_steps: 25
+  guidance_scale: 15.0
+  use_image_compression: true
+  use_prompt_builder: false
+  k: 8
+  num_attempts: 4
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+
+version_27: # same v12 but no_image_compression
+  id_prompt: 3
+  method: "I->SVG + CLIP + Text_Insert + Aesthetic"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)), nostalgic feeling, soft warm light, of"
+  suffix_prompt: "with flat color blocks, high contrast, watercolor illustration, romantic and dreamy mood."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_27"
+  height: 768
+  width: 768
+  num_inference_steps: 25
+  guidance_scale: 15.0
+  use_image_compression: false
+  use_prompt_builder: false
+  k: 8
+  num_attempts: 3
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12
+
+version_28: # same v12 | similari between svg and prompt
+  id_prompt: 3
+  method: "I->KMean->SVG + CLIP + Text_Insert + Aesthetic"   
+  model: "StableDiffusionV2"  
+  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)), nostalgic feeling, soft warm light, of"
+  suffix_prompt: "with flat color blocks, high contrast, watercolor illustration, romantic and dreamy mood."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_28"
+  height: 768
+  width: 768
+  num_inference_steps: 25
+  guidance_scale: 15.0
+  use_image_compression: true
+  use_prompt_builder: false
+  similarity_strategy: clip
+  k: 8
+  num_attempts: 3
+  verbose: true
+  random_seed: 42
+  bitmap2svg_config:
+    max_size_bytes: 9900
+    resize: true
+    target_size: [384, 384]
+    adaptive_fill: true
+    num_color: 12

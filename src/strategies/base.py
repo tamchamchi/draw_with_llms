@@ -17,4 +17,20 @@ class PromptBuildingStrategy(ABC):
     def build(self, description: str, **kwargs) -> Dict[str, Optional[str]]:
         pass
 
+class SimilarityRewardStrategy(ABC):
+    """Interface cho các chiến lược tính điểm tương đồng hoặc điểm thưởng."""
+    @abstractmethod
+    def calculate(self, image: Image.Image, description: Optional[str] = None, **kwargs) -> Optional[float]:
+        """
+        Tính toán điểm số.
+
+        Args:
+            image (Image.Image): Ảnh cần đánh giá.
+            description (Optional[str]): Mô tả text (cần cho CLIP).
+            **kwargs: Các tham số bổ sung.
+
+        Returns:
+            Optional[float]: Điểm số tính được hoặc None nếu lỗi.
+        """
+        pass
 

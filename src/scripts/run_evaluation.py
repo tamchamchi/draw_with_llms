@@ -15,6 +15,7 @@ try:
     from src.evaluators.score_evaluator import ScoreEvaluator
     from src.evaluators.aesthetic import AestheticEvaluator
     from src.evaluators.vqa import VQAEvaluator
+    from src.evaluators.image_reward import IREvaluator
     from src.generators.stable_diffusion_v2 import (
         StableDiffusionV2,
     )  # Hoặc model bạn dùng
@@ -22,6 +23,8 @@ try:
     from src.strategies.build_prompt.categorized_prompt_strategy import (
         CategorizedPromptStrategy,
     )
+    from src.strategies.similarity_reward.clip_similarity import ClipSimilarityStrategy
+    from src.strategies.similarity_reward.image_reward import ImageRewardStrategy
 
     # Import đường dẫn dữ liệu thô
     from configs.configs import RAW_DATA_DIR, YAML_CONFIG_FILE
@@ -99,6 +102,16 @@ def main():
     parser.add_argument(
         "--use_prompt_builder", action=argparse.BooleanOptionalAction, default=None
     )
+    # <<<--- Thêm Argument chọn Similarity/Reward Strategy ---<<<
+    parser.add_argument(
+        "--similarity_strategy",
+        type=str,
+        default="clip",  # Mặc định dùng CLIP
+        choices=["clip", "image_reward"],
+        help="Chiến lược tính điểm tương đồng/thưởng ('clip' hoặc 'image_reward').",
+    )
+    # >>>-------------------------------------------------->>>
+
     parser.add_argument("--k", type=int, default=None)
     parser.add_argument("--num_attempts", type=int, default=None)
     parser.add_argument("--random_seed", type=int, default=None)
@@ -161,6 +174,27 @@ def main():
         generator = StableDiffusionV2()
         data = Data(TRAIN_DATA_PATH, QUESTION_DATA_PATH)
         prompt_builder = CategorizedPromptStrategy()
+
+        image_reward_evaluator = IREvaluator()
+        # <<<--- Khởi tạo Similarity/Reward Strategy được chọn ---<<<
+        if args.similarity_strategy == "clip":
+            similarity_reward_strategy = ClipSimilarityStrategy(
+                aesthetic_evaluator=aesthetic_evaluator
+            )
+        elif args.similarity_strategy == "image_reward":
+            similarity_reward_strategy = ImageRewardStrategy(
+                image_reward_evaluator=image_reward_evaluator
+            )
+        else:
+            print(
+                f"Lỗi: Similarity strategy '{args.similarity_strategy}' không hợp lệ."
+            )
+            sys.exit(1)
+        print(
+            f"--- Sử dụng Similarity/Reward Strategy: {type(similarity_reward_strategy).__name__} ---"
+        )
+        # >>>------------------------------------------------------>>>
+
     except Exception as e:
         print(f"Lỗi khởi tạo dependencies: {e}")
         import traceback
@@ -171,7 +205,12 @@ def main():
     print("--- Khởi tạo ScoreEvaluator ---")
     try:
         evaluator = ScoreEvaluator(
-            vqa_evaluator, aesthetic_evaluator, generator, data, prompt_builder
+            vqa_evaluator,
+            aesthetic_evaluator,
+            generator,
+            data,
+            prompt_builder,
+            similarity_reward_strategy,
         )
     except Exception as e:
         print(f"Lỗi khởi tạo ScoreEvaluator: {e}")
@@ -208,8 +247,9 @@ def main():
             "verbose", False)
     )
     final_use_prompt_builder = (
-        args.use_prompt_builder if args.use_prompt_builder is not None else yaml_params.get(
-            "use_prompt_builder", False)
+        args.use_prompt_builder
+        if args.use_prompt_builder is not None
+        else yaml_params.get("use_prompt_builder", False)
     )
     final_use_compression = (
         args.use_image_compression
