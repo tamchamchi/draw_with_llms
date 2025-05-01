@@ -89,7 +89,10 @@ class AestheticEvaluator:
             # Extract text features using CLIP
             text_features = self.clip_model.encode_text(text)
 
+        image_features /= image_features.norm(dim=-1, keepdim=True)
+        text_features /= text_features.norm(dim=-1, keepdim=True)
+
         # Compute cosine similarity (dot product since CLIP features are normalized)
-        similarity = (image_features @ text_features.T).item()
+        similarity = max((image_features @ text_features.T).item(), 0)
 
         return similarity

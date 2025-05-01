@@ -11,11 +11,16 @@ from configs.configs import RESULTS_DIR
 
 from ..data.data_loader import Data
 from ..data.image_processor import ImageProcessor, svg_to_png
-from ..scoring.scoring import score
-from ..strategies.base import ImageProcessingStrategy, PromptBuildingStrategy, SimilarityRewardStrategy
+from ..scoring.scoring import score, harmonic_mean
+from ..strategies.base import (
+    ImageProcessingStrategy,
+    PromptBuildingStrategy,
+    SimilarityRewardStrategy,
+)
 from ..strategies.image_processing.compression import CompressionStrategy
 from ..strategies.image_processing.no_compression import NoCompressionStrategy
 from ..utils.bitmap_to_svg import bitmap_to_svg_layered
+# from ..utils.image_to_svg import bitmap_to_svg_layered
 from ..utils.formatting_utils import naming_template, score_caption
 from ..utils.image_utils import add_caption_to_image
 from .aesthetic import AestheticEvaluator
@@ -168,26 +173,28 @@ class ScoreEvaluator:
         results["num_char_submit"] = eval_vqa_submit.get("num_char", 0)
 
         # --- !!! SỬ DỤNG STRATEGY ĐỂ TÍNH SIMILARITY/REWARD !!! ---
-        print(f"--- Calculating Similarity/Reward using: {type(self.similarity_reward_strategy).__name__} ---")
-        similarity_reward_score = self.similarity_reward_strategy.calculate(
-            image=bitmap,          # Hoặc image_submit tùy bạn muốn đánh giá ảnh nào
-            description=description # Cần cho CLIP
+        print(
+            f"--- Calculating Similarity/Reward using: {type(self.similarity_reward_strategy).__name__} ---"
         )
-        results["similarity_reward_score"] = similarity_reward_score # Lưu kết quả (có thể là None)
+        similarity_reward_score = self.similarity_reward_strategy.calculate(
+            image=bitmap,  # Hoặc image_submit tùy bạn muốn đánh giá ảnh nào
+            description=description,  # Cần cho CLIP
+        )
+        # Lưu kết quả (có thể là None)
+        results["text_alignment_score"] = similarity_reward_score
         # >>>---------------------------------------------------->>>
 
         print(
             f"Scores (SVG-based): Total={results['total_score']:.4f}, VQA={results['vqa_score']:.4f}, Aesthetic={results['aesthetic_score']:.4f}, OCR={results['ocr_score']:.4f}"
         )
-        print(f"Bitmap Quality: {results['bitmap_quality']:.4f}")
+        # print(f"Bitmap Quality: {results['bitmap_quality']:.4f}")
         print(
             f"Bitmap VQA: {results['vqa_bitmap_scores']}, Chars: {results['num_char_bitmap']}"
         )
         print(
             f"Submit Img VQA: {results['vqa_submit_scores']}, Chars: {results['num_char_submit']}"
         )
-        print(f"Similarity/Reward Score:: {results['similarity_reward_score']:.4f}")
-
+        # print(f"Similarity/Reward Score: {results['text_alignment_score']:.4f}")
         return results
 
     def _save_artifacts(
@@ -281,12 +288,25 @@ class ScoreEvaluator:
         print("--- Template Step: Update Best Score ---")
         # ... (Logic cập nhật điểm như code trước) ...
         current_total = current_eval_results["total_score"]
-        current_similarity_reward_score = current_eval_results["similarity_reward_score"]
+        current_similarity_reward_score = current_eval_results["text_alignment_score"]
         current_aesthetic = current_eval_results["aesthetic_score"]
         is_better = False
+        current_val_score = (
+            harmonic_mean(current_similarity_reward_score, current_aesthetic)
+            * current_eval_results["ocr_score"]
+        )
+        best_val_score = (
+            harmonic_mean(
+                best_scores_tracking["text_alignment_score"],
+                best_scores_tracking["best_aesthetic_score"],
+            )
+            * best_scores_tracking["best_ocr_score"]
+        )
         if (
             current_similarity_reward_score > best_scores_tracking["text_alignment_score"]
             and current_aesthetic > best_scores_tracking["best_aesthetic_score"]
+            # current_val_score > best_val_score
+            # current_aesthetic > best_scores_tracking["best_aesthetic_score"]
         ):
             best_scores_tracking["best_total_score"] = current_total
             best_scores_tracking["best_vqa_score"] = current_eval_results["vqa_score"]
@@ -294,10 +314,13 @@ class ScoreEvaluator:
                 "aesthetic_score"
             ]
             best_scores_tracking["best_ocr_score"] = current_eval_results["ocr_score"]
-            best_scores_tracking["text_alignment_score"] = current_similarity_reward_score
+            best_scores_tracking["text_alignment_score"] = (
+                current_similarity_reward_score
+            )
             is_better = True
             if verbose:
                 print("✅ New best result found!")
+                print(f"Best Choosing Score: {current_val_score}")
         elif verbose:
             print("❌ Score not improved based on criteria.")
         return is_better
@@ -444,11 +467,11 @@ class ScoreEvaluator:
 
         # --- Tracking Best Results (như cũ) ---
         best_scores_tracking = {
-            "best_total_score": float('-inf'),
+            "best_total_score": float("-inf"),
             "best_vqa_score": 0.0,
             "best_aesthetic_score": 0.0,
             "best_ocr_score": 0.0,
-            "text_alignment_score": float('-inf'),
+            "text_alignment_score": float("-inf"),
         }
 
         # --- Vòng lặp chính (gọi Template Method - như cũ) ---

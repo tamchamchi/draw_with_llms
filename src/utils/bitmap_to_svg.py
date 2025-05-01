@@ -11,7 +11,7 @@ def add_manual_i_to_svg_no_group(
     y: int = 50,  # Tọa độ Y góc trên bên trái của chữ I
     width: int = 10,  # Chiều rộng của chữ I (thường hẹp)
     height: int = 40,  # Chiều cao của chữ I
-    color: str = "black"  # Màu sắc của chữ I
+    color: str = "black",  # Màu sắc của chữ I
     # stroke_width không cần thiết nếu dùng fill
 ) -> str:
     """
@@ -24,7 +24,7 @@ def add_manual_i_to_svg_no_group(
         y: Tọa độ Y cho góc trên bên trái của chữ I.
         width: Chiều rộng của chữ I.
         height: Chiều cao của chữ I.
-        color: Màu sắc của chữ I (ví dụ: 'purple', '#800080').
+        color: Màu sắc của chữ I.
 
     Returns:
         Chuỗi chứa nội dung SVG mới với chữ I đã được thêm vào.
@@ -54,16 +54,16 @@ def add_manual_i_to_svg_no_group(
     insert_pos = match.start()
 
     # --- Chèn phần tử chữ I vào trước thẻ đóng ---
-    modified_svg_content = svg_content[:insert_pos] + \
-        manual_i_element + svg_content[insert_pos:]
+    modified_svg_content = (
+        svg_content[:insert_pos] + manual_i_element + svg_content[insert_pos:]
+    )
 
     return modified_svg_content
 
 
 def compress_hex_color(hex_color):
     """Convert hex color to shortest possible representation"""
-    r, g, b = int(hex_color[1:3], 16), int(
-        hex_color[3:5], 16), int(hex_color[5:7], 16)
+    r, g, b = int(hex_color[1:3], 16), int(hex_color[3:5], 16), int(hex_color[5:7], 16)
     if r % 17 == 0 and g % 17 == 0 and b % 17 == 0:
         return f"#{r // 17:x}{g // 17:x}{b // 17:x}"
     return hex_color
@@ -94,7 +94,7 @@ def extract_features_by_scale(img_np, num_colors=16):
     pixels = img_rgb.reshape(-1, 3).astype(np.float32)
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.2)
     _, labels, centers = cv2.kmeans(
-        pixels, num_colors, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS
+        pixels, num_colors, None, criteria, 10, cv2.KMEANS_PP_CENTERS
     )
 
     # Quantized image
@@ -125,8 +125,7 @@ def extract_features_by_scale(img_np, num_colors=16):
         contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
         # Convert RGB to compressed hex
-        hex_color = compress_hex_color(
-            f"#{color[0]:02x}{color[1]:02x}{color[2]:02x}")
+        hex_color = compress_hex_color(f"#{color[0]:02x}{color[1]:02x}{color[2]:02x}")
 
         color_features = []
         for contour in contours:
@@ -145,8 +144,7 @@ def extract_features_by_scale(img_np, num_colors=16):
 
             # Distance from image center (normalized)
             dist_from_center = np.sqrt(
-                ((cx - center_x) / width) ** 2 +
-                ((cy - center_y) / height) ** 2
+                ((cx - center_x) / width) ** 2 + ((cy - center_y) / height) ** 2
             )
 
             # Simplify contour
@@ -154,12 +152,10 @@ def extract_features_by_scale(img_np, num_colors=16):
             approx = cv2.approxPolyDP(contour, epsilon, True)
 
             # Generate points string
-            points = " ".join(
-                [f"{pt[0][0]:.1f},{pt[0][1]:.1f}" for pt in approx])
+            points = " ".join([f"{pt[0][0]:.1f},{pt[0][1]:.1f}" for pt in approx])
 
             # Calculate importance (area, proximity to center, complexity)
-            importance = area * (1 - dist_from_center) * \
-                (1 / (len(approx) + 1))
+            importance = area * (1 - dist_from_center) * (1 / (len(approx) + 1))
 
             color_features.append(
                 {
@@ -297,7 +293,7 @@ def bitmap_to_svg_layered(
         original_size = image.size
 
     # Convert to numpy array, ensure RGB
-    image_rgb = image.convert('RGB')
+    image_rgb = image.convert("RGB")
     img_np = np.array(image_rgb)
 
     # Get image dimensions (after potential resize) for viewBox
@@ -320,14 +316,7 @@ def bitmap_to_svg_layered(
     svg_header = f'<svg width="{orig_width}" height="{orig_height}" viewBox="0 0 {width} {height}" xmlns="http://www.w3.org/2000/svg">\n'
     # Dùng 100% thay vì width, height cố định
     svg_bg = f'<rect width="100%" height="100%" fill="{bg_hex_color}"/>\n'
-
-    # *** Thêm vector hình số 1 (dưới dạng hình chữ nhật nhỏ) ***
-    # Tọa độ (2,2), rộng 1, cao 2 (rất nhỏ trong viewBox)
-    # Màu đen (#000) để tương phản
-    svg_shape_1 = '<rect x="2" y="2" width="1" height="2" fill="#000"/>\n'
-    # **********************************************************
-
-    svg_base = svg_header + svg_bg + svg_shape_1  # Thêm hình số 1 vào base
+    svg_base = svg_header + svg_bg
     svg_footer = "</svg>"
 
     # Calculate base size (bao gồm cả hình số 1)
@@ -335,7 +324,8 @@ def bitmap_to_svg_layered(
     available_bytes = max_size_bytes - base_size
     if available_bytes < 0:  # Nếu base đã vượt quá giới hạn
         print(
-            "Warning: Base SVG size exceeds max_size_bytes. Only base SVG will be returned.")
+            "Warning: Base SVG size exceeds max_size_bytes. Only base SVG will be returned."
+        )
         # Có thể trả về SVG chỉ có nền và số 1 nếu muốn
         return svg_base + svg_footer  # Hoặc chỉ trả về SVG nền
         # return svg_header + svg_bg + svg_footer
@@ -346,7 +336,9 @@ def bitmap_to_svg_layered(
         features = extract_features_by_scale(img_np, num_colors=num_colors)
     except NameError:
         print("Error: 'extract_features_by_scale' function is not defined.")
-        return svg_base + svg_footer  # Trả về SVG cơ bản nếu không thể trích xuất feature
+        return (
+            svg_base + svg_footer
+        )  # Trả về SVG cơ bản nếu không thể trích xuất feature
 
     # --- Phần còn lại của hàm (logic adaptive_fill / non-adaptive) giữ nguyên ---
     # Chỉ cần đảm bảo rằng `svg_base` đã bao gồm `svg_shape_1`
@@ -358,18 +350,16 @@ def bitmap_to_svg_layered(
         for feature in features:
             # Try adding the feature
             try:
-                feature_svg = (
-                    f'<polygon points="{feature["points"]}" fill="{compress_hex_color(feature["color"])}" />\n'
-                )
+                feature_svg = f'<polygon points="{feature["points"]}" fill="{compress_hex_color(feature["color"])}" />\n'
             except KeyError:
                 print(
-                    f"Warning: Skipping feature due to missing 'points' or 'color'. Feature: {feature}")
+                    f"Warning: Skipping feature due to missing 'points' or 'color'. Feature: {feature}"
+                )
                 continue
             except NameError:
                 print("Error: 'compress_hex_color' function is not defined.")
                 # Xử lý lỗi, có thể dùng màu gốc hoặc bỏ qua
-                feature_svg = (
-                    f'<polygon points="{feature["points"]}" fill="{feature["color"]}" />\n')
+                feature_svg = f'<polygon points="{feature["points"]}" fill="{feature["color"]}" />\n'
 
             # Check if adding this feature exceeds size limit
             if len((svg + feature_svg + svg_footer).encode("utf-8")) > max_size_bytes:
@@ -388,30 +378,48 @@ def bitmap_to_svg_layered(
     for feature in features:
         try:
             # Use compress_hex_color here as well for consistency
-            color = compress_hex_color(feature['color'])
-            original_points = feature['points']
+            color = compress_hex_color(feature["color"])
+            original_points = feature["points"]
             level1_points = simplify_polygon(original_points, 1)
             level2_points = simplify_polygon(original_points, 2)
             level3_points = simplify_polygon(original_points, 3)
 
             feature_sizes.append(
                 {
-                    "original": len(f'<polygon points="{original_points}" fill="{color}" />\n'.encode("utf-8")),
-                    "level1": len(f'<polygon points="{level1_points}" fill="{color}" />\n'.encode("utf-8")),
-                    "level2": len(f'<polygon points="{level2_points}" fill="{color}" />\n'.encode("utf-8")),
-                    "level3": len(f'<polygon points="{level3_points}" fill="{color}" />\n'.encode("utf-8")),
+                    "original": len(
+                        f'<polygon points="{original_points}" fill="{color}" />\n'.encode(
+                            "utf-8"
+                        )
+                    ),
+                    "level1": len(
+                        f'<polygon points="{level1_points}" fill="{color}" />\n'.encode(
+                            "utf-8"
+                        )
+                    ),
+                    "level2": len(
+                        f'<polygon points="{level2_points}" fill="{color}" />\n'.encode(
+                            "utf-8"
+                        )
+                    ),
+                    "level3": len(
+                        f'<polygon points="{level3_points}" fill="{color}" />\n'.encode(
+                            "utf-8"
+                        )
+                    ),
                     # Lưu trữ points và color để sử dụng lại
                     "points": original_points,
-                    "color": color
+                    "color": color,
                 }
             )
         except KeyError:
             print(
-                f"Warning: Skipping feature sizing due to missing 'points' or 'color'. Feature: {feature}")
+                f"Warning: Skipping feature sizing due to missing 'points' or 'color'. Feature: {feature}"
+            )
             continue
         except NameError:
             print(
-                "Error: 'compress_hex_color' or 'simplify_polygon' function is not defined.")
+                "Error: 'compress_hex_color' or 'simplify_polygon' function is not defined."
+            )
             # Handle error appropriately, maybe skip feature or use defaults
             return svg_base + svg_footer  # Exit early if core functions missing
 
@@ -441,8 +449,7 @@ def bitmap_to_svg_layered(
             if bytes_used + feature_size <= max_size_bytes:
                 # Cần gọi lại simplify_polygon vì chỉ lưu kích thước, không lưu points đã simplify
                 try:
-                    simplified_points = simplify_polygon(
-                        size_info["points"], level)
+                    simplified_points = simplify_polygon(size_info["points"], level)
                 except NameError:
                     print("Error: 'simplify_polygon' function is not defined.")
                     # Handle error: skip or exit
@@ -460,7 +467,8 @@ def bitmap_to_svg_layered(
     final_size = len(svg.encode("utf-8"))
     if final_size > max_size_bytes:
         print(
-            f"Warning: Final SVG size {final_size} slightly exceeded limit {max_size_bytes}. Returning base SVG.")
+            f"Warning: Final SVG size {final_size} slightly exceeded limit {max_size_bytes}. Returning base SVG."
+        )
         # Fallback an toàn nhất là trả về SVG cơ bản
         return f'<svg width="{orig_width}" height="{orig_height}" viewBox="0 0 {width} {height}" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="{bg_hex_color}"/><rect x="2" y="2" width="1" height="2" fill="#000"/></svg>'
 
@@ -468,5 +476,5 @@ def bitmap_to_svg_layered(
     # utilization = (final_size / max_size_bytes) * 100
     # print(f"SVG generated. Size: {final_size} bytes. Utilization: {utilization:.2f}%")
 
-    return  add_manual_i_to_svg_no_group(svg)
+    return add_manual_i_to_svg_no_group(svg)
     # return svg
