@@ -28,6 +28,7 @@ class ClipSimilarityStrategy(SimilarityRewardStrategy):
             return None
         try:
             print("  Calculating CLIP Similarity...")
+            print(f"   Prompt: {description}")
             # Giả sử hàm này trả về một số float
             score = self.aesthetic_evaluator.compute_clip_similarity(image, description)
             # Chuyển đổi kiểu nếu cần và kiểm tra không phải NaN/Inf

@@ -66,7 +66,7 @@ class Report:
         # Các cột điểm cần tính trung bình
         # score_columns = ["total_score", "vqa_score", "aesthetic_score", "ocr_score"]
         # Có thể thêm các cột khác nếu muốn, ví dụ clip_similarity
-        score_columns = ["total_score", "vqa_score", "aesthetic_score", "ocr_score", "clip_similarity", "text_alignment_score"]
+        score_columns = ["total_score", "vqa_score", "aesthetic_score", "ocr_score", "clip_similarity", "text_alignment_score", "size"]
 
         print(f"--- Đang tính điểm trung bình cho từng file JSON trong: {self.results_path} ---")
 

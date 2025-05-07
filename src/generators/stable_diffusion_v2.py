@@ -16,8 +16,11 @@ class StableDiffusionV2:
             scheduler=self.scheduler,
             torch_dtype=torch.float16,
             variant="fp16",
-            local_files_only=True
+            # local_files_only=True
         ).to(self.device)
+
+        # self.lora_path = "jainr3/sd-diffusiondb-pixelart-v2-model-lora"
+        # self.pipe.load_lora_weights("jainr3/sd-diffusiondb-pixelart-v2-model-lora")
 
     def generate(
         self,

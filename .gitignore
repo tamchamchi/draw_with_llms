@@ -19,6 +19,7 @@ venv/
 *.pt
 *.pth
 *.txt
+note.txt
 
 # Ignore output and log directories
 logs/

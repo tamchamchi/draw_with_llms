@@ -196,3 +196,27 @@ class VQAEvaluator:
         # Exponentially decreasing towards 0.0 if more than free_chars detected
         # ---------------Modified Output----------------------
         return min(1.0, math.exp(-num_char + free_chars)) if not use_num_char else (min(1.0, math.exp(-num_char + free_chars)), decoded)
+
+    def caption(self, image):
+        inputs = (
+            self.processor(
+                text="<image>caption\n",
+                images=image,
+                return_tensors="pt",
+            )
+            .to(torch.float16)
+            .to(self.model.device)
+        )
+        input_len = inputs["input_ids"].shape[-1]
+
+        with torch.inference_mode():
+            outputs = self.model.generate(**inputs, max_new_tokens=32, do_sample=False)
+            outputs = outputs[0][input_len:]
+            decoded = self.processor.decode(outputs, skip_special_tokens=True)
+
+        return decoded
+    
+# if __name__ == "__main__":
+#     vqa = VQAEvaluator()
+#     image = Image.open(r"/home/anhndt/draw-with-llm/data/results/version_12--image_compression/0dcd2e-gray wool coat with a faux fur collar/no_cap - 1 - 0.4241.png")
+#     print(vqa.caption(image))

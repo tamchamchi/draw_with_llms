@@ -23,6 +23,7 @@ try:
     from src.strategies.build_prompt.categorized_prompt_strategy import (
         CategorizedPromptStrategy,
     )
+    from src.strategies.similarity_reward.captioning import CaptionStrategy
     from src.strategies.similarity_reward.clip_similarity import ClipSimilarityStrategy
     from src.strategies.similarity_reward.image_reward import ImageRewardStrategy
 
@@ -107,7 +108,7 @@ def main():
         "--similarity_strategy",
         type=str,
         default="clip",  # Mặc định dùng CLIP
-        choices=["clip", "image_reward"],
+        choices=["clip", "image_reward", "caption"],
         help="Chiến lược tính điểm tương đồng/thưởng ('clip' hoặc 'image_reward').",
     )
     # >>>-------------------------------------------------->>>
@@ -171,7 +172,10 @@ def main():
     try:
         vqa_evaluator = VQAEvaluator()
         aesthetic_evaluator = AestheticEvaluator()
+        # if yaml_params.get("model", "UnknownModel") == "StableDiffusionV2":
         generator = StableDiffusionV2()
+        # elif yaml_params.get("model", "UnknownModel") == "Flux":
+        #     # generator = FLux()
         data = Data(TRAIN_DATA_PATH, QUESTION_DATA_PATH)
         prompt_builder = CategorizedPromptStrategy()
 
@@ -184,6 +188,10 @@ def main():
         elif args.similarity_strategy == "image_reward":
             similarity_reward_strategy = ImageRewardStrategy(
                 image_reward_evaluator=image_reward_evaluator
+            )
+        elif args.similarity_strategy == "caption":
+            similarity_reward_strategy = CaptionStrategy(
+                vqa_evaluator = vqa_evaluator
             )
         else:
             print(

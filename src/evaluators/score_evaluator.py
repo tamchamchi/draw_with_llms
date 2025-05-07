@@ -254,6 +254,7 @@ class ScoreEvaluator:
             captioned_processed.save(save_path)
             print(f"    Saved: {save_path}")
         # ... (Lưu các ảnh bitmap, submit có/không caption, svg như trước) ...
+        # Bitmap
         captioned_bitmap = add_caption_to_image(
             bitmap, [description, f"VQA: {vqa_bitmap_str}", char_bitmap_str]
         )
@@ -262,6 +263,8 @@ class ScoreEvaluator:
         )
         captioned_bitmap.save(save_path)
         print(f"    Saved: {save_path}")
+
+        # Submit
         captioned_submit = add_caption_to_image(
             image_submit,
             [description, main_scores_str, f"VQA: {vqa_submit_str}", char_submit_str],
@@ -271,15 +274,28 @@ class ScoreEvaluator:
         )
         captioned_submit.save(save_path)
         print(f"Saved: {save_path}")
+
         save_path = os.path.join(
             id_folder, naming_template("no_cap", attempt, aesthetic_score_submit)
         )
         image_submit.save(save_path)
         print(f"Saved: {save_path}")
+
+        # Eval Image
+        image_processor = ImageProcessor(image=svg_to_png(svg_content), seed=42).apply()
+        eval_image = image_processor.image.copy()
+        save_path = os.path.join(
+            id_folder, naming_template("eval", attempt, aesthetic_score_submit)
+        )
+        eval_image.save(save_path)
+        print(f"Saved: {save_path}")
+
+        # SVG file
         svg_filename = f"output_attempt_{attempt + 1}.svg"
         svg_path = os.path.join(id_folder, svg_filename)
         with open(svg_path, "w", encoding="utf-8") as f:
             f.write(svg_content)
+
         print(f"Saved: {svg_path} (Size: {len(svg_content.encode('utf-8'))} bytes)")
 
     def _update_best_score(
@@ -293,19 +309,20 @@ class ScoreEvaluator:
         is_better = False
         current_val_score = (
             harmonic_mean(current_similarity_reward_score, current_aesthetic)
-            * current_eval_results["ocr_score"]
         )
         best_val_score = (
             harmonic_mean(
-                best_scores_tracking["text_alignment_score"],
+                best_scores_tracking["best_text_alignment_score"],
                 best_scores_tracking["best_aesthetic_score"],
             )
-            * best_scores_tracking["best_ocr_score"]
         )
+        print(f"Current Score: {current_val_score}")
+        print(f"Best Score: {best_val_score}")
         if (
-            current_similarity_reward_score > best_scores_tracking["text_alignment_score"]
-            and current_aesthetic > best_scores_tracking["best_aesthetic_score"]
-            # current_val_score > best_val_score
+            # current_total > best_scores_tracking["best_total_score"]
+            # current_similarity_reward_score > best_scores_tracking["best_text_alignment_score"]
+            # and current_aesthetic > best_scores_tracking["best_aesthetic_score"]
+            current_val_score > best_val_score
             # current_aesthetic > best_scores_tracking["best_aesthetic_score"]
         ):
             best_scores_tracking["best_total_score"] = current_total
@@ -314,15 +331,15 @@ class ScoreEvaluator:
                 "aesthetic_score"
             ]
             best_scores_tracking["best_ocr_score"] = current_eval_results["ocr_score"]
-            best_scores_tracking["text_alignment_score"] = (
+            best_scores_tracking["best_text_alignment_score"] = (
                 current_similarity_reward_score
             )
             is_better = True
             if verbose:
                 print("✅ New best result found!")
-                print(f"Best Choosing Score: {current_val_score}")
         elif verbose:
             print("❌ Score not improved based on criteria.")
+
         return is_better
 
     def _vqa_ocr_evaluation_helper(self, id_prompt: str, image: Image.Image) -> dict:
@@ -420,8 +437,8 @@ class ScoreEvaluator:
         print(f"--- Using Strategy: {type(processing_strategy).__name__} ---")
 
         # --- Setup (sử dụng _setup_directories đã cập nhật) ---
-        id_folder = self._setup_directories(version, id_prompt, processing_strategy)
         description = self.data.get_description_by_id(id_prompt)
+        id_folder = self._setup_directories(version, f"{id_prompt}-{description}", processing_strategy)
         # prompt = self._build_prompt(prefix_prompt, description, suffix_prompt, negative_prompt)
 
         # --- !!! Xây dựng Prompt bằng Strategy !!! ---
@@ -471,7 +488,7 @@ class ScoreEvaluator:
             "best_vqa_score": 0.0,
             "best_aesthetic_score": 0.0,
             "best_ocr_score": 0.0,
-            "text_alignment_score": float("-inf"),
+            "best_text_alignment_score": 0.0,
         }
 
         # --- Vòng lặp chính (gọi Template Method - như cũ) ---
@@ -542,9 +559,10 @@ class ScoreEvaluator:
             "vqa_score": best_scores_tracking["best_vqa_score"],
             "aesthetic_score": best_scores_tracking["best_aesthetic_score"],
             "ocr_score": best_scores_tracking["best_ocr_score"],
-            "text_alignment_score": best_scores_tracking["text_alignment_score"]
-            if best_scores_tracking["text_alignment_score"] > -1
+            "text_alignment_score": best_scores_tracking["best_text_alignment_score"]
+            if best_scores_tracking["best_text_alignment_score"] > -1
             else 0.0,
+            "size": len(svg_content.encode("utf-8"))
         }
         print(
             f"Best Scores Found: Total={final_results['total_score']:.4f}, Text Alignment={final_results['text_alignment_score']:.4f}"
