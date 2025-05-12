@@ -18,6 +18,7 @@ venv/
 # Ignore model weights and checkpoints
 *.pt
 *.pth
+*.zip
 *.txt
 note.txt
 

@@ -1,31 +1,17 @@
---- Added project root to sys.path: /home/anhndt/draw-with-llm ---
+--- Added project root to sys.path: /home/anhndt/draw_with_llms ---
 --- Khởi tạo Report và xử lý dữ liệu từ: data/results/score/json ---
 
 ======================================================================
 --- Điểm trung bình của từng file JSON ---
 --- Đang tính điểm trung bình cho từng file JSON trong: data/results/score/json ---
-  Processing version_1.json (list of 15 items)...
-  Processing version_1_01.json (list of 15 items)...
-  Processing version_1_02.json (list of 15 items)...
-  Processing version_2.json (list of 15 items)...
-  Processing version_2_01.json (list of 15 items)...
-  Processing version_2_02.json (list of 15 items)...
-  Processing version_3.json (list of 15 items)...
-  Processing version_3_01.json (list of 15 items)...
-  Processing version_3_02.json (list of 15 items)...
-+-------------------+-------------------+-----------------+-----------------------+-----------------+-----------------------+----------------------------+------------+
-| filename          |   avg_total_score |   avg_vqa_score |   avg_aesthetic_score |   avg_ocr_score | avg_clip_similarity   |   avg_text_alignment_score |   avg_size |
-|-------------------+-------------------+-----------------+-----------------------+-----------------+-----------------------+----------------------------+------------|
-| version_1_02.json |            0.6933 |          0.7814 |                0.4832 |          1.0000 | <NA>                  |                     0.2703 |  9904.6000 |
-| version_1_01.json |            0.6905 |          0.7795 |                0.4806 |          1.0000 | <NA>                  |                     0.2678 |  9901.3333 |
-| version_3.json    |            0.6830 |          0.7817 |                0.4705 |          1.0000 | <NA>                  |                     0.2581 |  9905.6000 |
-| version_2_02.json |            0.6785 |          0.7605 |                0.4808 |          1.0000 | <NA>                  |                     0.2695 |  9888.4667 |
-| version_3_02.json |            0.6785 |          0.7671 |                0.4789 |          1.0000 | <NA>                  |                     0.2739 |  9884.1333 |
-| version_2_01.json |            0.6776 |          0.7610 |                0.4816 |          1.0000 | <NA>                  |                     0.2675 |  9892.8667 |
-| version_3_01.json |            0.6728 |          0.7583 |                0.4796 |          1.0000 | <NA>                  |                     0.2682 |  9875.9333 |
-| version_1.json    |            0.6627 |          0.7482 |                0.4692 |          1.0000 | <NA>                  |                     0.2534 |  9895.5333 |
-| version_2.json    |            0.6619 |          0.7541 |                0.4632 |          1.0000 | <NA>                  |                     0.2516 |  9913.2667 |
-+-------------------+-------------------+-----------------+-----------------------+-----------------+-----------------------+----------------------------+------------+
+  Processing version_3_sdv2.json (list of 15 items)...
+  Processing version_3_sdxl_turbo.json (list of 15 items)...
++---------------------------+-------------------+-----------------+------------------+-----------------------+------------------------+-----------------+----------------------------+------------+
+| filename                  |   avg_total_score |   avg_vqa_score |   avg_vqa_origin |   avg_aesthetic_score |   avg_aesthetic_origin |   avg_ocr_score |   avg_text_alignment_score |   avg_size |
+|---------------------------+-------------------+-----------------+------------------+-----------------------+------------------------+-----------------+----------------------------+------------|
+| version_3_sdxl_turbo.json |            0.6962 |          0.7870 |           0.8050 |                0.4882 |                 0.6116 |          1.0000 |                     0.2837 |  9895.2667 |
+| version_3_sdv2.json       |            0.6676 |          0.7583 |           0.7832 |                0.4749 |                 0.5924 |          1.0000 |                     0.2581 |  9908.6667 |
++---------------------------+-------------------+-----------------+------------------+-----------------------+------------------------+-----------------+----------------------------+------------+
 
 Đang lưu bảng trung bình từng file vào: data/results/score/per_file_averages.csv
 Lưu thành công.
@@ -35,7 +21,8 @@ Lưu thành công.
 +------------------------------------------------------------------+---------------+-------------+-------------------+-------------+
 |                                                                  |   total_score |   vqa_score |   aesthetic_score |   ocr_score |
 |------------------------------------------------------------------+---------------+-------------+-------------------+-------------|
-| ('I->SVG + CLIP + Text_Insert + Aesthetic', 'StableDiffusionV2') |        0.6776 |      0.7658 |            0.4764 |      1.0000 |
+| ('I->SVG + CLIP + Text_Insert + Aesthetic', 'SDXL-Turbo')        |        0.6962 |      0.7870 |            0.4882 |      1.0000 |
+| ('I->SVG + CLIP + Text_Insert + Aesthetic', 'StableDiffusionV2') |        0.6676 |      0.7583 |            0.4749 |      1.0000 |
 +------------------------------------------------------------------+---------------+-------------+-------------------+-------------+
 
 --- Script hoàn thành ---

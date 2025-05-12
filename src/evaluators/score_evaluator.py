@@ -182,6 +182,8 @@ class ScoreEvaluator:
         )
         # Lưu kết quả (có thể là None)
         results["text_alignment_score"] = similarity_reward_score
+        results["vqa_origin"] = results["vqa_bitmap_scores"]
+        results["aesthetic_origin"] = results["bitmap_quality"]
         # >>>---------------------------------------------------->>>
 
         print(
@@ -334,6 +336,8 @@ class ScoreEvaluator:
             best_scores_tracking["best_text_alignment_score"] = (
                 current_similarity_reward_score
             )
+            best_scores_tracking["best_aesthetic_origin"] = current_eval_results["aesthetic_origin"]
+            best_scores_tracking["best_vqa_origin"] = sum(current_eval_results["vqa_origin"]) / len(current_eval_results["vqa_origin"])
             is_better = True
             if verbose:
                 print("✅ New best result found!")
@@ -486,7 +490,9 @@ class ScoreEvaluator:
         best_scores_tracking = {
             "best_total_score": float("-inf"),
             "best_vqa_score": 0.0,
+            "best_vqa_origin": 0.0,
             "best_aesthetic_score": 0.0,
+            "best_aesthetic_origin": 0.0,
             "best_ocr_score": 0.0,
             "best_text_alignment_score": 0.0,
         }
@@ -557,7 +563,9 @@ class ScoreEvaluator:
             if best_scores_tracking["best_total_score"] > -1
             else 0.0,
             "vqa_score": best_scores_tracking["best_vqa_score"],
+            "vqa_origin": best_scores_tracking["best_vqa_origin"],
             "aesthetic_score": best_scores_tracking["best_aesthetic_score"],
+            "aesthetic_origin": best_scores_tracking["best_aesthetic_origin"],
             "ocr_score": best_scores_tracking["best_ocr_score"],
             "text_alignment_score": best_scores_tracking["best_text_alignment_score"]
             if best_scores_tracking["best_text_alignment_score"] > -1

@@ -23,7 +23,7 @@ version_1:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_2:
   id_prompt: 2
@@ -49,7 +49,7 @@ version_2:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_3: 
   id_prompt: 3
@@ -75,7 +75,7 @@ version_3:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_4: # submit-score = 0.574
   id_prompt: 1
@@ -99,7 +99,7 @@ version_4: # submit-score = 0.574
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_5:
   id_prompt: 1
@@ -123,7 +123,7 @@ version_5:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_6:
   id_prompt: 1
@@ -147,7 +147,7 @@ version_6:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_7:
   id_prompt: 1
@@ -171,7 +171,7 @@ version_7:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_8:
   id_prompt: 1
@@ -195,7 +195,7 @@ version_8:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_9:
   id_prompt: 1
@@ -219,7 +219,7 @@ version_9:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_10:
   id_prompt: 1
@@ -243,7 +243,7 @@ version_10:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_11:
   id_prompt: 2
@@ -267,7 +267,7 @@ version_11:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_12: # submit-score = 0.581
   id_prompt: 3
@@ -292,7 +292,7 @@ version_12: # submit-score = 0.581
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 
 version_13: # submit-score = 0.592
@@ -317,7 +317,7 @@ version_13: # submit-score = 0.592
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
     
 version_14: # submit-score = 0.567
   id_prompt: 5
@@ -341,7 +341,7 @@ version_14: # submit-score = 0.567
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 
 version_15:
@@ -366,7 +366,7 @@ version_15:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_16: # submit-score = 0.583
   id_prompt: 6
@@ -390,7 +390,7 @@ version_16: # submit-score = 0.583
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_17: # submit-score = 0.577
   id_prompt: 7
@@ -414,7 +414,7 @@ version_17: # submit-score = 0.577
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_18:
   id_prompt: 7
@@ -438,7 +438,7 @@ version_18:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_19:
   id_prompt: 8
@@ -462,7 +462,7 @@ version_19:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_0.599: # {self.prompt_prefix} {description} {self.prompt_suffix} Negative: {self.negative_prompt}
   id_prompt: 1
@@ -486,7 +486,7 @@ version_0.599: # {self.prompt_prefix} {description} {self.prompt_suffix} Negativ
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_20: # submit_score = 0.580 - category description
   id_prompt: 3
@@ -510,7 +510,7 @@ version_20: # submit_score = 0.580 - category description
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_21: # change build_general_prompt.
   id_prompt: 8
@@ -535,7 +535,7 @@ version_21: # change build_general_prompt.
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_22:
   id_prompt: 3
@@ -560,7 +560,7 @@ version_22:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_23: # submit_score = 0.602
   id_prompt: 3
@@ -585,7 +585,7 @@ version_23: # submit_score = 0.602
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 
 version_24:
@@ -611,7 +611,7 @@ version_24:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_25:
   id_prompt: 3
@@ -637,7 +637,7 @@ version_25:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_26: # same v12 but k = 4
   id_prompt: 3
@@ -662,7 +662,7 @@ version_26: # same v12 but k = 4
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_27: # same v12 but no_image_compression
   id_prompt: 3
@@ -687,7 +687,7 @@ version_27: # same v12 but no_image_compression
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_28:
   id_prompt: 11
@@ -713,7 +713,7 @@ version_28:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 16
+    num_colors: 16
 
 version_29:
   id_prompt: 20
@@ -739,7 +739,7 @@ version_29:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_30:
   id_prompt: 22
@@ -765,7 +765,7 @@ version_30:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 16
+    num_colors: 16
 
 version_31:
   id_prompt: 22
@@ -791,7 +791,7 @@ version_31:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 12
+    num_colors: 12
 
 version_32:
   id_prompt: 22
@@ -817,4 +817,4 @@ version_32:
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
-    num_color: 8
+    num_colors: 8

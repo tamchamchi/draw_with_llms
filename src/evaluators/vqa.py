@@ -216,7 +216,7 @@ class VQAEvaluator:
 
         return decoded
     
-# if __name__ == "__main__":
-#     vqa = VQAEvaluator()
-#     image = Image.open(r"/home/anhndt/draw-with-llm/data/results/version_12--image_compression/0dcd2e-gray wool coat with a faux fur collar/no_cap - 1 - 0.4241.png")
-#     print(vqa.caption(image))
+if __name__ == "__main__":
+    vqa = VQAEvaluator()
+    # image = Image.open(r"/home/anhndt/draw-with-llm/data/results/version_12--image_compression/0dcd2e-gray wool coat with a faux fur collar/no_cap - 1 - 0.4241.png")
+    # print(vqa.caption(image))

@@ -6,26 +6,26 @@ import os
 import argparse
 import json
 import yaml
+from dotenv import load_dotenv
 
+load_dotenv()
 # --- Import các lớp/hàm thực tế ---
 try:
-    sys.path.append(os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "../..")))
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+
+    os.environ["HF_HOME"] = os.getenv("HF_HOME")
 
     from src.evaluators.score_evaluator import ScoreEvaluator
     from src.evaluators.aesthetic import AestheticEvaluator
     from src.evaluators.vqa import VQAEvaluator
-    from src.evaluators.image_reward import IREvaluator
-    from src.generators.stable_diffusion_v2 import (
-        StableDiffusionV2,
-    )  # Hoặc model bạn dùng
+    from src.generators.stable_diffusion_v2 import StableDiffusionV2
+    from src.generators.sdxl_turbo import StableDiffusionXL_Turbo
     from src.data.data_loader import Data  # Lớp xử lý data
     from src.strategies.build_prompt.categorized_prompt_strategy import (
         CategorizedPromptStrategy,
     )
     from src.strategies.similarity_reward.captioning import CaptionStrategy
     from src.strategies.similarity_reward.clip_similarity import ClipSimilarityStrategy
-    from src.strategies.similarity_reward.image_reward import ImageRewardStrategy
 
     # Import đường dẫn dữ liệu thô
     from configs.configs import RAW_DATA_DIR, YAML_CONFIG_FILE
@@ -42,16 +42,14 @@ except ImportError as e:
     print("Kiểm tra lại cấu trúc thư mục, PYTHONPATH và các file __init__.py.")
     sys.exit(1)
 except FileNotFoundError as e:
-    print(
-        f"Lỗi không tìm thấy file/thư mục khi import hoặc định nghĩa đường dẫn: {e}")
+    print(f"Lỗi không tìm thấy file/thư mục khi import hoặc định nghĩa đường dẫn: {e}")
     sys.exit(1)
 
 
 def load_config_from_yaml(version_name: str) -> dict:
     """Tải cấu hình cho một version cụ thể từ file YAML."""
     if not os.path.exists(YAML_CONFIG_FILE):
-        print(
-            f"Lỗi: Không tìm thấy file cấu hình YAML tại '{YAML_CONFIG_FILE}'")
+        print(f"Lỗi: Không tìm thấy file cấu hình YAML tại '{YAML_CONFIG_FILE}'")
         sys.exit(1)
     try:
         with open(YAML_CONFIG_FILE, "r") as f:
@@ -129,7 +127,7 @@ def main():
     )
 
     # --- Tham số ghi đè SVG config (như cũ) ---
-    parser.add_argument("--svg_num_color", type=int, default=None)
+    parser.add_argument("--svg_num_colors", type=int, default=None)
     # ... (giữ nguyên các args svg_max_bytes, svg_resize, svg_target_w/h, svg_adaptive_fill) ...
     parser.add_argument("--svg_max_bytes", type=int, default=None)
     parser.add_argument(
@@ -172,27 +170,24 @@ def main():
     try:
         vqa_evaluator = VQAEvaluator()
         aesthetic_evaluator = AestheticEvaluator()
-        # if yaml_params.get("model", "UnknownModel") == "StableDiffusionV2":
-        generator = StableDiffusionV2()
-        # elif yaml_params.get("model", "UnknownModel") == "Flux":
-        #     # generator = FLux()
+
+        if args.model == "StableDiffusionV2":
+            print("   Use Stable Diffusion v2")
+            generator = StableDiffusionV2()
+        elif args.model == "SDXL-Turbo":
+            print("   Use Stable Diffusion XL Turbo")
+            generator = StableDiffusionXL_Turbo()
+
         data = Data(TRAIN_DATA_PATH, QUESTION_DATA_PATH)
         prompt_builder = CategorizedPromptStrategy()
 
-        image_reward_evaluator = IREvaluator()
         # <<<--- Khởi tạo Similarity/Reward Strategy được chọn ---<<<
         if args.similarity_strategy == "clip":
             similarity_reward_strategy = ClipSimilarityStrategy(
                 aesthetic_evaluator=aesthetic_evaluator
             )
-        elif args.similarity_strategy == "image_reward":
-            similarity_reward_strategy = ImageRewardStrategy(
-                image_reward_evaluator=image_reward_evaluator
-            )
         elif args.similarity_strategy == "caption":
-            similarity_reward_strategy = CaptionStrategy(
-                vqa_evaluator = vqa_evaluator
-            )
+            similarity_reward_strategy = CaptionStrategy(vqa_evaluator=vqa_evaluator)
         else:
             print(
                 f"Lỗi: Similarity strategy '{args.similarity_strategy}' không hợp lệ."
@@ -251,8 +246,7 @@ def main():
         else yaml_params.get("version_description", args.version)
     )
     final_verbose = (
-        args.verbose if args.verbose is not None else yaml_params.get(
-            "verbose", False)
+        args.verbose if args.verbose is not None else yaml_params.get("verbose", False)
     )
     final_use_prompt_builder = (
         args.use_prompt_builder
@@ -281,8 +275,8 @@ def main():
 
     # Xử lý override cho SVG config
     final_bitmap2svg_config = base_bitmap2svg_config.copy()
-    if args.svg_num_color is not None:
-        final_bitmap2svg_config["num_color"] = args.svg_num_color
+    if args.svg_num_colors is not None:
+        final_bitmap2svg_config["num_colors"] = args.svg_num_colors
     # ... (xử lý các override svg khác như cũ) ...
     if args.svg_max_bytes is not None:
         final_bitmap2svg_config["max_size_bytes"] = args.svg_max_bytes
@@ -298,9 +292,9 @@ def main():
         final_bitmap2svg_config["target_size"] = [new_w, new_h]
     if args.svg_adaptive_fill is not None:
         final_bitmap2svg_config["adaptive_fill"] = args.svg_adaptive_fill
-    if "num_color" not in final_bitmap2svg_config:
-        print("Warning: 'num_color' không có trong bitmap2svg_config. Dùng default=12.")
-        final_bitmap2svg_config["num_color"] = 12
+    if "num_colors" not in final_bitmap2svg_config:
+        print("Warning: 'num_colors' không có trong bitmap2svg_config. Dùng default=12.")
+        final_bitmap2svg_config["num_colors"] = 12
 
     base_evaluation_params = {
         "prefix_prompt": args.prefix_prompt,
@@ -333,8 +327,7 @@ def main():
         "num_attempts",
         "random_seed",
     ]
-    missing_keys = [
-        k for k in required_keys if base_evaluation_params.get(k) is None]
+    missing_keys = [k for k in required_keys if base_evaluation_params.get(k) is None]
     if missing_keys:
         print(f"Lỗi: Các tham số cơ bản sau bị thiếu: {missing_keys}")
         sys.exit(1)
@@ -362,8 +355,7 @@ def main():
 
         try:
             # Gọi hàm generate_and_evaluate (không cần truyền method, model vào đây)
-            result_core = evaluator.generate_and_evaluate(
-                **current_evaluation_params)
+            result_core = evaluator.generate_and_evaluate(**current_evaluation_params)
 
             # !!! Thêm method và model vào kết quả TRƯỚC KHI lưu !!!
             # Tạo bản sao để không ảnh hưởng lần lặp sau nếu result_core là mutable reference
