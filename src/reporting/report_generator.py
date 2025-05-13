@@ -31,15 +31,14 @@ class Report:
                 if filename.endswith(".json"):
                     file_path = os.path.join(self.results_path, filename)
                     try:
-                        with open(file_path, "r", encoding='utf-8') as f:
+                        with open(file_path, "r", encoding="utf-8") as f:
                             data = json.load(f)
                         if isinstance(data, list):
                             results_list.extend(data)
                         elif isinstance(data, dict):
                             results_list.append(data)
                     except Exception as e:
-                        print(
-                            f"  Warning: Skipping {filename} due to error: {e}")
+                        print(f"  Warning: Skipping {filename} due to error: {e}")
         except Exception as e:
             print(f"Error reading directory {self.results_path}: {e}")
             return None
@@ -59,27 +58,44 @@ class Report:
                                     Trả về None nếu có lỗi thư mục.
         """
         if not self.results_path or not os.path.isdir(self.results_path):
-            print(f"Lỗi: results_path '{self.results_path}' không phải là thư mục hợp lệ.")
+            print(
+                f"Lỗi: results_path '{self.results_path}' không phải là thư mục hợp lệ."
+            )
             return None
 
         per_file_avg_list = []
         # Các cột điểm cần tính trung bình
         # score_columns = ["total_score", "vqa_score", "aesthetic_score", "ocr_score"]
         # Có thể thêm các cột khác nếu muốn, ví dụ clip_similarity
-        score_columns = ["total_score", "vqa_score", "vqa_origin", "aesthetic_score", "aesthetic_origin", "ocr_score", "text_alignment_score", "size"]
+        score_columns = [
+            "total_score",
+            "vqa_score",
+            "vqa_origin",
+            "aesthetic_score",
+            "aesthetic_origin",
+            "ocr_score",
+            "text_alignment_score",
+            "size",
+        ]
 
-        print(f"--- Đang tính điểm trung bình cho từng file JSON trong: {self.results_path} ---")
+        print(
+            f"--- Đang tính điểm trung bình cho từng file JSON trong: {self.results_path} ---"
+        )
 
-        for filename in sorted(os.listdir(self.results_path)): # Sắp xếp tên file cho dễ nhìn
+        for filename in sorted(
+            os.listdir(self.results_path)
+        ):  # Sắp xếp tên file cho dễ nhìn
             if filename.endswith(".json"):
                 file_path = os.path.join(self.results_path, filename)
                 # Khởi tạo dict kết quả cho file này, điểm mặc định là NaN (Not a Number)
                 file_avg_data = {"filename": filename}
                 for col in score_columns:
-                    file_avg_data[f"avg_{col}"] = pd.NA # Dùng pd.NA tốt hơn None cho pandas
+                    file_avg_data[f"avg_{col}"] = (
+                        pd.NA
+                    )  # Dùng pd.NA tốt hơn None cho pandas
 
                 try:
-                    with open(file_path, "r", encoding='utf-8') as f:
+                    with open(file_path, "r", encoding="utf-8") as f:
                         data = json.load(f)
 
                     # Xử lý dữ liệu đã load
@@ -88,25 +104,39 @@ class Report:
                         print(f"  Processing {filename} (single dict)...")
                         for col in score_columns:
                             # Lấy giá trị, nếu thiếu key hoặc không phải số sẽ là NA
-                            file_avg_data[f"avg_{col}"] = pd.to_numeric(data.get(col), errors='coerce')
+                            file_avg_data[f"avg_{col}"] = pd.to_numeric(
+                                data.get(col), errors="coerce"
+                            )
 
                     elif isinstance(data, list) and data:
                         # Trường hợp file JSON chứa list các dict kết quả
                         print(f"  Processing {filename} (list of {len(data)} items)...")
                         if isinstance(data[0], dict):
                             temp_df = pd.DataFrame(data)
-                            existing_score_cols = [col for col in score_columns if col in temp_df.columns]
+                            existing_score_cols = [
+                                col for col in score_columns if col in temp_df.columns
+                            ]
                             if existing_score_cols:
-                                numeric_df = temp_df[existing_score_cols].apply(pd.to_numeric, errors='coerce')
-                                file_means = numeric_df.mean(skipna=True).to_dict() # Tính trung bình, bỏ qua NaN
+                                numeric_df = temp_df[existing_score_cols].apply(
+                                    pd.to_numeric, errors="coerce"
+                                )
+                                file_means = numeric_df.mean(
+                                    skipna=True
+                                ).to_dict()  # Tính trung bình, bỏ qua NaN
                                 for col, mean_val in file_means.items():
                                     file_avg_data[f"avg_{col}"] = mean_val
                             else:
-                                print(f"    Warning: Không tìm thấy cột điểm nào trong list của file {filename}.")
+                                print(
+                                    f"    Warning: Không tìm thấy cột điểm nào trong list của file {filename}."
+                                )
                         else:
-                             print(f"    Warning: List trong file {filename} không chứa dictionary.")
-                    else: # Trường hợp list rỗng hoặc kiểu dữ liệu khác
-                         print(f"    Warning: Kiểu dữ liệu không mong đợi ({type(data).__name__}) hoặc list rỗng trong file {filename}.")
+                            print(
+                                f"    Warning: List trong file {filename} không chứa dictionary."
+                            )
+                    else:  # Trường hợp list rỗng hoặc kiểu dữ liệu khác
+                        print(
+                            f"    Warning: Kiểu dữ liệu không mong đợi ({type(data).__name__}) hoặc list rỗng trong file {filename}."
+                        )
 
                 except json.JSONDecodeError:
                     print(f"  Error: Bỏ qua file {filename} do lỗi giải mã JSON.")
@@ -118,10 +148,12 @@ class Report:
 
         if not per_file_avg_list:
             print("Không xử lý được file JSON nào.")
-            return pd.DataFrame() # Trả về DataFrame rỗng
+            return pd.DataFrame()  # Trả về DataFrame rỗng
 
         # Tạo DataFrame cuối cùng
-        final_df = pd.DataFrame(per_file_avg_list).sort_values("avg_total_score", ascending=False)
+        final_df = pd.DataFrame(per_file_avg_list).sort_values(
+            "avg_total_score", ascending=False
+        )
         return final_df
 
     def get_json_data_by_file(self) -> Dict[str, Union[List, Dict, Any]]:
@@ -134,7 +166,7 @@ class Report:
             if filename.endswith(".json"):
                 file_path = os.path.join(self.results_path, filename)
                 try:
-                    with open(file_path, "r", encoding='utf-8') as f:
+                    with open(file_path, "r", encoding="utf-8") as f:
                         data = json.load(f)
                     data_by_file[filename] = data
                 except Exception as e:
@@ -171,30 +203,43 @@ class Report:
                                 # Tạo DataFrame từ các item đầu tiên
                                 display_data = data[:max_items_per_file]
                                 df_display = pd.DataFrame(display_data)
-                                print(tabulate(
-                                    df_display, headers='keys', tablefmt='psql', showindex=False, floatfmt=".4f"))
+                                print(
+                                    tabulate(
+                                        df_display,
+                                        headers="keys",
+                                        tablefmt="psql",
+                                        showindex=False,
+                                        floatfmt=".4f",
+                                    )
+                                )
                                 if len(data) > max_items_per_file:
                                     print(
-                                        f"  ... (and {len(data) - max_items_per_file} more items)")
+                                        f"  ... (and {len(data) - max_items_per_file} more items)"
+                                    )
                             except Exception as e_df:
                                 # Nếu lỗi tạo DataFrame (ví dụ các dict không đồng nhất key) thì in kiểu cũ
                                 print(
-                                    f"  (Could not create table: {e_df}. Displaying raw items instead.)")
+                                    f"  (Could not create table: {e_df}. Displaying raw items instead.)"
+                                )
                                 for i, item in enumerate(data[:max_items_per_file]):
                                     print(
-                                        f"  Item {i}: {json.dumps(item, indent=2, ensure_ascii=False)}")
+                                        f"  Item {i}: {json.dumps(item, indent=2, ensure_ascii=False)}"
+                                    )
                                 if len(data) > max_items_per_file:
                                     print(
-                                        f"  ... (and {len(data) - max_items_per_file} more items)")
+                                        f"  ... (and {len(data) - max_items_per_file} more items)"
+                                    )
                         else:
                             # Nếu list không chứa dict, in kiểu cũ
                             print(
-                                "  (List does not contain dictionaries, displaying raw items)")
+                                "  (List does not contain dictionaries, displaying raw items)"
+                            )
                             for i, item in enumerate(data[:max_items_per_file]):
                                 print(f"  Item {i}: {item}")
                             if len(data) > max_items_per_file:
                                 print(
-                                    f"  ... (and {len(data) - max_items_per_file} more items)")
+                                    f"  ... (and {len(data) - max_items_per_file} more items)"
+                                )
                     else:
                         print("  (List is empty)")
 
@@ -203,13 +248,25 @@ class Report:
                     print(f"  Type: Dictionary ({len(data)} keys)")
                     if data:  # Nếu dict không rỗng
                         # Tạo list of lists để dùng tabulate
-                        table_data = [[key, str(value)[:100] + ('...' if len(str(value)) > 100 else '')]  # Cắt bớt value dài
-                                      for key, value in list(data.items())[:max_items_per_file]]
-                        print(tabulate(table_data, headers=[
-                              'Key', 'Value (Preview)'], tablefmt='psql'))
+                        table_data = [
+                            [
+                                key,
+                                str(value)[:100]
+                                + ("..." if len(str(value)) > 100 else ""),
+                            ]  # Cắt bớt value dài
+                            for key, value in list(data.items())[:max_items_per_file]
+                        ]
+                        print(
+                            tabulate(
+                                table_data,
+                                headers=["Key", "Value (Preview)"],
+                                tablefmt="psql",
+                            )
+                        )
                         if len(data) > max_items_per_file:
                             print(
-                                f"  ... (and {len(data) - max_items_per_file} more keys)")
+                                f"  ... (and {len(data) - max_items_per_file} more keys)"
+                            )
                     else:
                         print("  (Dictionary is empty)")
 
@@ -226,6 +283,7 @@ class Report:
         except Exception as e:
             print(f"Unexpected error during display: {e}")
             import traceback
+
             traceback.print_exc()
 
     # ... (Các phương thức khác: save_results, get_avg_*, load_results, merge_sumary_prompt giữ nguyên) ...
@@ -238,7 +296,7 @@ class Report:
             output_dir = os.path.dirname(save_path)
             if output_dir:
                 os.makedirs(output_dir, exist_ok=True)
-            self.results.to_csv(save_path, index=False, encoding='utf-8')
+            self.results.to_csv(save_path, index=False, encoding="utf-8")
             print("Save successful.")
         except Exception as e:
             print(f"Error saving results to CSV: {e}")
@@ -246,18 +304,30 @@ class Report:
     def get_avg_result_with_method(self) -> Optional[pd.DataFrame]:
         if self.results is None or self.results.empty:
             return None
-        required_cols = ["method", "model", "total_score",
-                         "vqa_score", "aesthetic_score", "ocr_score"]
+        required_cols = [
+            "method",
+            "model",
+            "total_score",
+            "vqa_score",
+            "vqa_origin",
+            "aesthetic_score",
+            "aesthetic_origin",
+            "ocr_score",
+        ]
         if not all(col in self.results.columns for col in required_cols):
             return None
         try:
-            numeric_cols = ["total_score", "vqa_score",
-                            "aesthetic_score", "ocr_score"]
+            numeric_cols = [
+                "total_score",
+                "vqa_score",
+                "vqa_origin",
+                "aesthetic_score",
+                "aesthetic_origin",
+                "ocr_score",
+            ]
             for col in numeric_cols:
-                self.results[col] = pd.to_numeric(
-                    self.results[col], errors='coerce')
-            avg_results = self.results.groupby(["method", "model"])[
-                numeric_cols].mean()
+                self.results[col] = pd.to_numeric(self.results[col], errors="coerce")
+            avg_results = self.results.groupby(["method", "model"])[numeric_cols].mean()
             return avg_results
         except Exception as e:
             print(f"Error in get_avg_result_with_method: {e}")
@@ -266,18 +336,24 @@ class Report:
     def get_avg_result_with_method_and_prompt(self) -> Optional[pd.DataFrame]:
         if self.results is None or self.results.empty:
             return None
-        required_cols = ["method", "id_prompt", "model",
-                         "total_score", "vqa_score", "aesthetic_score", "ocr_score"]
+        required_cols = [
+            "method",
+            "id_prompt",
+            "model",
+            "total_score",
+            "vqa_score",
+            "aesthetic_score",
+            "ocr_score",
+        ]
         if not all(col in self.results.columns for col in required_cols):
             return None
         try:
-            numeric_cols = ["total_score", "vqa_score",
-                            "aesthetic_score", "ocr_score"]
+            numeric_cols = ["total_score", "vqa_score", "aesthetic_score", "ocr_score"]
             for col in numeric_cols:
-                self.results[col] = pd.to_numeric(
-                    self.results[col], errors='coerce')
+                self.results[col] = pd.to_numeric(self.results[col], errors="coerce")
             avg_results = self.results.groupby(["method", "id_prompt", "model"])[
-                numeric_cols].mean()
+                numeric_cols
+            ].mean()
             return avg_results
         except Exception as e:
             print(f"Error in get_avg_result_with_method_and_prompt: {e}")
@@ -286,18 +362,23 @@ class Report:
     def get_avg_result_with_prompt(self) -> Optional[pd.DataFrame]:
         if self.results is None or self.results.empty:
             return None
-        required_cols = ["id_prompt", "model", "total_score",
-                         "vqa_score", "aesthetic_score", "ocr_score"]
+        required_cols = [
+            "id_prompt",
+            "model",
+            "total_score",
+            "vqa_score",
+            "aesthetic_score",
+            "ocr_score",
+        ]
         if not all(col in self.results.columns for col in required_cols):
             return None
         try:
-            numeric_cols = ["total_score", "vqa_score",
-                            "aesthetic_score", "ocr_score"]
+            numeric_cols = ["total_score", "vqa_score", "aesthetic_score", "ocr_score"]
             for col in numeric_cols:
-                self.results[col] = pd.to_numeric(
-                    self.results[col], errors='coerce')
+                self.results[col] = pd.to_numeric(self.results[col], errors="coerce")
             avg_results = self.results.groupby(["id_prompt", "model"])[
-                numeric_cols].mean()
+                numeric_cols
+            ].mean()
             return avg_results
         except Exception as e:
             print(f"Error in get_avg_result_with_prompt: {e}")
@@ -317,9 +398,10 @@ class Report:
             self.results = None
 
     @staticmethod
-    def merge_sumary_prompt(summary_prompt_path: str, score_path: str) -> Optional[pd.DataFrame]:
-        print(
-            f"Merging summary: {summary_prompt_path} and scores: {score_path}")
+    def merge_sumary_prompt(
+        summary_prompt_path: str, score_path: str
+    ) -> Optional[pd.DataFrame]:
+        print(f"Merging summary: {summary_prompt_path} and scores: {score_path}")
         if not os.path.exists(summary_prompt_path):
             print(f"Error: Summary file not found: {summary_prompt_path}")
             return None
@@ -336,8 +418,7 @@ class Report:
             if merge_col not in score_df.columns:
                 print(f"Error: Column '{merge_col}' not in score.")
                 return None
-            merge_df = pd.merge(summary_prompt_df, score_df,
-                                how="right", on=merge_col)
+            merge_df = pd.merge(summary_prompt_df, score_df, how="right", on=merge_col)
             return merge_df
         except Exception as e:
             print(f"Error during merge: {e}")

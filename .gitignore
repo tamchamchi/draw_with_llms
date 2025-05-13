@@ -17,6 +17,7 @@ venv/
 
 # Ignore model weights and checkpoints
 *.pt
+*.safetensors
 *.pth
 *.zip
 *.txt

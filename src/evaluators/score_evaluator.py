@@ -20,6 +20,7 @@ from ..strategies.base import (
 from ..strategies.image_processing.compression import CompressionStrategy
 from ..strategies.image_processing.no_compression import NoCompressionStrategy
 from ..utils.bitmap_to_svg import bitmap_to_svg_layered
+
 # from ..utils.image_to_svg import bitmap_to_svg_layered
 from ..utils.formatting_utils import naming_template, score_caption
 from ..utils.image_utils import add_caption_to_image
@@ -306,24 +307,27 @@ class ScoreEvaluator:
         print("--- Template Step: Update Best Score ---")
         # ... (Logic cập nhật điểm như code trước) ...
         current_total = current_eval_results["total_score"]
-        current_similarity_reward_score = current_eval_results["text_alignment_score"]
-        current_aesthetic = current_eval_results["aesthetic_score"]
         is_better = False
-        current_val_score = (
-            harmonic_mean(current_similarity_reward_score, current_aesthetic)
+        current_val_score = harmonic_mean(
+            round(current_eval_results["text_alignment_score"], 3),
+            round(current_eval_results["aesthetic_score"], 3),
+            1.0,
         )
-        best_val_score = (
-            harmonic_mean(
-                best_scores_tracking["best_text_alignment_score"],
-                best_scores_tracking["best_aesthetic_score"],
-            )
+        best_val_score = harmonic_mean(
+            round(best_scores_tracking["best_text_alignment_score"], 3),
+            round(best_scores_tracking["best_aesthetic_score"], 3),
+            1.0,
         )
-        print(f"Current Score: {current_val_score}")
-        print(f"Best Score: {best_val_score}")
+        print(
+            f"Best Score: {best_scores_tracking['best_text_alignment_score']:.3f} - {best_scores_tracking['best_aesthetic_score']:.3f} - total: {best_val_score:.3f}"
+        )
+        print(
+            f"Current: {current_eval_results['text_alignment_score']:.3f} - {current_eval_results['aesthetic_score']:.3f} - total: {current_val_score:.3f}"
+        )
         if (
             # current_total > best_scores_tracking["best_total_score"]
-            # current_similarity_reward_score > best_scores_tracking["best_text_alignment_score"]
-            # and current_aesthetic > best_scores_tracking["best_aesthetic_score"]
+            # current_eval_results['text_alignment_score'] > best_scores_tracking["best_text_alignment_score"]
+            # and current_eval_results['aesthetic_score'] > best_scores_tracking["best_aesthetic_score"]
             current_val_score > best_val_score
             # current_aesthetic > best_scores_tracking["best_aesthetic_score"]
         ):
@@ -333,11 +337,16 @@ class ScoreEvaluator:
                 "aesthetic_score"
             ]
             best_scores_tracking["best_ocr_score"] = current_eval_results["ocr_score"]
-            best_scores_tracking["best_text_alignment_score"] = (
-                current_similarity_reward_score
-            )
-            best_scores_tracking["best_aesthetic_origin"] = current_eval_results["aesthetic_origin"]
-            best_scores_tracking["best_vqa_origin"] = sum(current_eval_results["vqa_origin"]) / len(current_eval_results["vqa_origin"])
+            best_scores_tracking["best_text_alignment_score"] = current_eval_results[
+                "text_alignment_score"
+            ]
+
+            best_scores_tracking["best_aesthetic_origin"] = current_eval_results[
+                "aesthetic_origin"
+            ]
+            best_scores_tracking["best_vqa_origin"] = sum(
+                current_eval_results["vqa_origin"]
+            ) / len(current_eval_results["vqa_origin"])
             is_better = True
             if verbose:
                 print("✅ New best result found!")
@@ -442,7 +451,9 @@ class ScoreEvaluator:
 
         # --- Setup (sử dụng _setup_directories đã cập nhật) ---
         description = self.data.get_description_by_id(id_prompt)
-        id_folder = self._setup_directories(version, f"{id_prompt}-{description}", processing_strategy)
+        id_folder = self._setup_directories(
+            version, f"{id_prompt}-{description}", processing_strategy
+        )
         # prompt = self._build_prompt(prefix_prompt, description, suffix_prompt, negative_prompt)
 
         # --- !!! Xây dựng Prompt bằng Strategy !!! ---
@@ -570,7 +581,7 @@ class ScoreEvaluator:
             "text_alignment_score": best_scores_tracking["best_text_alignment_score"]
             if best_scores_tracking["best_text_alignment_score"] > -1
             else 0.0,
-            "size": len(svg_content.encode("utf-8"))
+            "size": len(svg_content.encode("utf-8")),
         }
         print(
             f"Best Scores Found: Total={final_results['total_score']:.4f}, Text Alignment={final_results['text_alignment_score']:.4f}"
