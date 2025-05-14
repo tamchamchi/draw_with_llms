@@ -17,15 +17,20 @@ try:
 
     from src.evaluators.score_evaluator import ScoreEvaluator
     from src.evaluators.aesthetic import AestheticEvaluator
+    from src.evaluators.siglip import Siglip
     from src.evaluators.vqa import VQAEvaluator
     from src.generators.stable_diffusion_v2 import StableDiffusionV2
     from src.generators.sdxl_turbo import StableDiffusionXL_Turbo
+    from src.generators.sdxl_vetor import SDXL_Vector
     from src.data.data_loader import Data  # Lớp xử lý data
     from src.strategies.build_prompt.categorized_prompt_strategy import (
         CategorizedPromptStrategy,
     )
     from src.strategies.similarity_reward.captioning import CaptionStrategy
     from src.strategies.similarity_reward.clip_similarity import ClipSimilarityStrategy
+    from src.strategies.similarity_reward.siglip_similarity import (
+        SIGLIPSimilarityStrategy,
+    )
 
     # Import đường dẫn dữ liệu thô
     from configs.configs import RAW_DATA_DIR, YAML_CONFIG_FILE
@@ -106,8 +111,8 @@ def main():
         "--similarity_strategy",
         type=str,
         default="clip",  # Mặc định dùng CLIP
-        choices=["clip", "image_reward", "caption"],
-        help="Chiến lược tính điểm tương đồng/thưởng ('clip' hoặc 'image_reward').",
+        choices=["clip", "siglip", "caption"],
+        help="Chiến lược tính điểm tương đồng/thưởng ('clip' hoặc 'siglip').",
     )
     # >>>-------------------------------------------------->>>
 
@@ -123,7 +128,7 @@ def main():
         "--method", type=str, default=None, help="Ghi đè tên 'method' trong YAML."
     )
     parser.add_argument(
-        "--model", type=str, default=None, help="Ghi đè tên 'model' trong YAML."
+        "--model", type=str, default=None, choices=["StableDiffusionV2", "SDXL-Turbo", "SDXL-Vector"],help="Ghi đè tên 'model' trong YAML."
     )
 
     # --- Tham số ghi đè SVG config (như cũ) ---
@@ -177,6 +182,9 @@ def main():
         elif args.model == "SDXL-Turbo":
             print("   Use Stable Diffusion XL Turbo")
             generator = StableDiffusionXL_Turbo()
+        elif args.model == "SDXL-Vector":
+            print("   Use Stable Diffusion XL Vector")
+            generator = SDXL_Vector()
 
         data = Data(TRAIN_DATA_PATH, QUESTION_DATA_PATH)
         prompt_builder = CategorizedPromptStrategy()
@@ -188,6 +196,8 @@ def main():
             )
         elif args.similarity_strategy == "caption":
             similarity_reward_strategy = CaptionStrategy(vqa_evaluator=vqa_evaluator)
+        elif args.similarity_strategy == "siglip":
+            similarity_reward_strategy = SIGLIPSimilarityStrategy(Siglip())
         else:
             print(
                 f"Lỗi: Similarity strategy '{args.similarity_strategy}' không hợp lệ."
@@ -293,7 +303,9 @@ def main():
     if args.svg_adaptive_fill is not None:
         final_bitmap2svg_config["adaptive_fill"] = args.svg_adaptive_fill
     if "num_colors" not in final_bitmap2svg_config:
-        print("Warning: 'num_colors' không có trong bitmap2svg_config. Dùng default=12.")
+        print(
+            "Warning: 'num_colors' không có trong bitmap2svg_config. Dùng default=12."
+        )
         final_bitmap2svg_config["num_colors"] = 12
 
     base_evaluation_params = {

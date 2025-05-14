@@ -329,7 +329,6 @@ class ScoreEvaluator:
             # current_eval_results['text_alignment_score'] > best_scores_tracking["best_text_alignment_score"]
             # and current_eval_results['aesthetic_score'] > best_scores_tracking["best_aesthetic_score"]
             current_val_score > best_val_score
-            # current_aesthetic > best_scores_tracking["best_aesthetic_score"]
         ):
             best_scores_tracking["best_total_score"] = current_total
             best_scores_tracking["best_vqa_score"] = current_eval_results["vqa_score"]

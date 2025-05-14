@@ -28,6 +28,7 @@ idna==3.10
 imageio==2.37.0
 Jinja2==3.1.6
 joblib==1.5.0
+kagglehub==0.3.12
 kiwisolver==1.4.8
 lazy_loader==0.4
 MarkupSafe==3.0.2
@@ -56,6 +57,7 @@ pandas==2.2.3
 peft==0.15.2
 pillow==11.2.1
 polars==1.29.0
+protobuf==6.30.2
 pyarrow==20.0.0
 pycparser==2.22
 pyparsing==3.2.3
@@ -68,6 +70,7 @@ safetensors==0.5.3
 scikit-image==0.25.2
 scikit-learn==1.6.1
 scipy==1.15.3
+sentencepiece==0.2.0
 soupsieve==2.7
 svgwrite==1.4.3
 sympy==1.14.0
