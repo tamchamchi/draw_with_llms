@@ -77,14 +77,15 @@ version_3:
     adaptive_fill: true
     num_colors: 12
 
+# a detailed matte painting, {prompt}, inspired by John Salminen, trending on cgsociety, modern european ink painting, detailed paintings, paintings, watercolours
 version_4: # submit-score = 0.574
   id_prompt: 1
   method: "I->SVG + CLIP + Text_Insert + Aesthetic"   
   model: "StableDiffusionV2"  
-  prefix_prompt: "(flat style:1.3), (high contrast:1.3)"
-  suffix_prompt: "by Walenty Wańkowicz, by Grzegorz Rutkowski, (in the center of the frame: 1.5), 2D illustration watercolor painting style, oil paint concept art."
+  prefix_prompt: "vector art, "
+  suffix_prompt: ",inspired by Chris Ware, Patrick Caulfield, featured on pixabay, pop art, amazing splashscreen artwork, sticker - art, app icon"
   negative_prompt: ""
-  version_description: "version_3"
+  version_description: "version_4"
   height: 768
   width: 768
   num_inference_steps: 35
@@ -105,10 +106,10 @@ version_4: # submit-score = 0.574
 
 version_5:
   id_prompt: 1
-  method: "I->KMean->SVG"   
+  method: "I->SVG"   
   model: "StableDiffusionV2"  
-  prefix_prompt: "Simple, Classic, Minimal illustration, ((flat vector icon)) of"
-  suffix_prompt: "with flat color blocks, high contrast, beautiful, outline only, no details, solid color only."
+  prefix_prompt: "Simple, classic image of"
+  suffix_prompt: "with flat color blocks, high contrast,beautiful, minimal details, solid colors only"
   negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
   version_description: "version_5"
   height: 768

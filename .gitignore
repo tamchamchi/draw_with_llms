@@ -21,6 +21,8 @@ venv/
 *.pth
 *.zip
 *.txt
+*.png
+*.svg
 note.txt
 
 # Ignore output and log directories

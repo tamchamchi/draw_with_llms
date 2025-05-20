@@ -31,6 +31,53 @@ class VQAEvaluator:
             quantization_config=self.quantization_config,
         ).to(self.device)
 
+    def score_yes_no(self, query, image):
+        return self.get_yes_probability(image, query)
+
+    def mask_yes_no(self, logits):
+        """Masks logits for 'yes' or 'no'."""
+        yes_token_id = self.processor.tokenizer.convert_tokens_to_ids("yes")
+        no_token_id = self.processor.tokenizer.convert_tokens_to_ids("no")
+        yes_with_space_token_id = self.processor.tokenizer.convert_tokens_to_ids(" yes")
+        no_with_space_token_id = self.processor.tokenizer.convert_tokens_to_ids(" no")
+
+        mask = torch.full_like(logits, float("-inf"))
+        mask[:, yes_token_id] = logits[:, yes_token_id]
+        mask[:, no_token_id] = logits[:, no_token_id]
+        mask[:, yes_with_space_token_id] = logits[:, yes_with_space_token_id]
+        mask[:, no_with_space_token_id] = logits[:, no_with_space_token_id]
+        return mask
+
+    def get_yes_probability(self, image, prompt) -> float:
+        inputs = self.processor(images=image, text=prompt, return_tensors="pt").to(
+            "cuda:0"
+        )
+
+        with torch.no_grad():
+            outputs = self.model(**inputs)
+            # Logits for the last (predicted) token
+            logits = outputs.logits[:, -1, :]
+            masked_logits = self.mask_yes_no(logits)
+            probabilities = torch.softmax(masked_logits, dim=-1)
+
+        yes_token_id = self.processor.tokenizer.convert_tokens_to_ids("yes")
+        no_token_id = self.processor.tokenizer.convert_tokens_to_ids("no")
+        yes_with_space_token_id = self.processor.tokenizer.convert_tokens_to_ids(" yes")
+        no_with_space_token_id = self.processor.tokenizer.convert_tokens_to_ids(" no")
+
+        prob_yes = probabilities[0, yes_token_id].item()
+        prob_no = probabilities[0, no_token_id].item()
+        prob_yes_space = probabilities[0, yes_with_space_token_id].item()
+        prob_no_space = probabilities[0, no_with_space_token_id].item()
+
+        total_yes_prob = prob_yes + prob_yes_space
+        total_no_prob = prob_no + prob_no_space
+
+        total_prob = total_yes_prob + total_no_prob
+        renormalized_yes_prob = total_yes_prob / total_prob
+
+        return renormalized_yes_prob
+
     def score(self, questions, choices, answers, image, n=4):
         scores = []
         batches = (chunked(qs, n) for qs in [questions, choices, answers])
@@ -135,7 +182,8 @@ class VQAEvaluator:
 
         with torch.no_grad():
             outputs = self.model(**inputs)
-            logits = outputs.logits[:, -1, :]  # Logits for the last (predicted) token
+            # Logits for the last (predicted) token
+            logits = outputs.logits[:, -1, :]
             masked_logits = self.mask_choices(logits, choices_list)
             probabilities = torch.softmax(masked_logits, dim=-1)
 
@@ -195,7 +243,11 @@ class VQAEvaluator:
 
         # Exponentially decreasing towards 0.0 if more than free_chars detected
         # ---------------Modified Output----------------------
-        return min(1.0, math.exp(-num_char + free_chars)) if not use_num_char else (min(1.0, math.exp(-num_char + free_chars)), decoded)
+        return (
+            min(1.0, math.exp(-num_char + free_chars))
+            if not use_num_char
+            else (min(1.0, math.exp(-num_char + free_chars)), decoded)
+        )
 
     def caption(self, image):
         inputs = (
@@ -215,7 +267,8 @@ class VQAEvaluator:
             decoded = self.processor.decode(outputs, skip_special_tokens=True)
 
         return decoded
-    
+
+
 if __name__ == "__main__":
     vqa = VQAEvaluator()
     # image = Image.open(r"/home/anhndt/draw-with-llm/data/results/version_12--image_compression/0dcd2e-gray wool coat with a faux fur collar/no_cap - 1 - 0.4241.png")

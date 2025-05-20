@@ -28,9 +28,8 @@ try:
     )
     from src.strategies.similarity_reward.captioning import CaptionStrategy
     from src.strategies.similarity_reward.clip_similarity import ClipSimilarityStrategy
-    from src.strategies.similarity_reward.siglip_similarity import (
-        SIGLIPSimilarityStrategy,
-    )
+    from src.strategies.similarity_reward.siglip_similarity import SIGLIPSimilarityStrategy
+    from src.strategies.similarity_reward.yes_no import YesNoStrategy
 
     # Import đường dẫn dữ liệu thô
     from configs.configs import RAW_DATA_DIR, YAML_CONFIG_FILE
@@ -101,7 +100,7 @@ def main():
     parser.add_argument("--num_inference_steps", type=int, default=None)
     parser.add_argument("--guidance_scale", type=float, default=None)
     parser.add_argument(
-        "--use_image_compression", action=argparse.BooleanOptionalAction, default=None
+        "--use_image_compression", action=argparse.BooleanOptionalAction, default=None,
     )
     parser.add_argument(
         "--use_prompt_builder", action=argparse.BooleanOptionalAction, default=None
@@ -111,8 +110,7 @@ def main():
         "--similarity_strategy",
         type=str,
         default="clip",  # Mặc định dùng CLIP
-        choices=["clip", "siglip", "caption"],
-        help="Chiến lược tính điểm tương đồng/thưởng ('clip' hoặc 'siglip').",
+        choices=["clip", "siglip", "caption", "yes-no"],
     )
     # >>>-------------------------------------------------->>>
 
@@ -198,6 +196,8 @@ def main():
             similarity_reward_strategy = CaptionStrategy(vqa_evaluator=vqa_evaluator)
         elif args.similarity_strategy == "siglip":
             similarity_reward_strategy = SIGLIPSimilarityStrategy(Siglip())
+        elif args.similarity_strategy == "yes-no":
+            similarity_reward_strategy = YesNoStrategy(vqa_evaluator=vqa_evaluator)
         else:
             print(
                 f"Lỗi: Similarity strategy '{args.similarity_strategy}' không hợp lệ."

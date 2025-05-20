@@ -19,7 +19,9 @@ from ..strategies.base import (
 )
 from ..strategies.image_processing.compression import CompressionStrategy
 from ..strategies.image_processing.no_compression import NoCompressionStrategy
+from ..strategies.image_processing.vtracer import VtracerCompressionStrategy
 from ..utils.bitmap_to_svg import bitmap_to_svg_layered
+from ..utils.new_i_to_svg import image_to_svg
 
 # from ..utils.image_to_svg import bitmap_to_svg_layered
 from ..utils.formatting_utils import naming_template, score_caption
@@ -64,8 +66,10 @@ class ScoreEvaluator:
 
         if isinstance(processing_strategy, CompressionStrategy):
             strategy_suffix = "-image_compression"
-        elif isinstance(processing_strategy, NoCompressionStrategy):
-            strategy_suffix = "-no_image_compression"
+        # elif isinstance(processing_strategy, NoCompressionStrategy):
+        #     strategy_suffix = "-no_image_compression"
+        elif isinstance(processing_strategy, VtracerCompressionStrategy):
+            strategy_suffix = "-vtracer"
         else:
             strategy_suffix = "-unknown_processing"
 
@@ -111,16 +115,22 @@ class ScoreEvaluator:
         print("--- Template Step: Process Image ---")
         return processing_strategy.process(bitmap)
 
+    def _apply_image_procession(self, image: Image.Image) -> Image.Image:
+        image_processor = ImageProcessor(image=image, seed=42).apply()
+        processed_image = image_processor.image
+        return processed_image
+
     def _convert_to_svg(self, processed_image: Image.Image, **kwargs) -> str:
         print("--- Template Step: Convert to SVG ---")
         return bitmap_to_svg_layered(
             image=processed_image,
-            max_size_bytes=kwargs.get("max_size_bytes", 9900),
+            max_size_bytes=kwargs.get("max_size_bytes", 9800),
             resize=kwargs.get("resize", True),
             target_size=kwargs.get("target_size", (384, 384)),
             adaptive_fill=kwargs.get("adaptive_fill", True),
             num_colors=kwargs.get("num_colors", 12),
         )
+        # return image_to_svg(processed_image)
 
     def _evaluate_results(
         self,
@@ -135,10 +145,19 @@ class ScoreEvaluator:
         results = {}
         solution = self.data.get_solution(id_prompt)
         # Kiểm tra loại strategy để lấy điểm compressed_quality
-        if isinstance(processing_strategy, CompressionStrategy):
+        if isinstance(processing_strategy, CompressionStrategy) or isinstance(
+            processing_strategy, VtracerCompressionStrategy
+        ):
             # Giả sử aesthetic_evaluator có thể đánh giá ảnh đã xử lý
             results["compressed_quality"] = self.aesthetic_evaluator.score(
                 processed_image
+            )
+            eval_vqa_compressed = self._vqa_ocr_evaluation_helper(
+                id_prompt=id_prompt, image=processed_image
+            )
+            results["num_char_img_compression"] = eval_vqa_compressed.get("num_char", 0)
+            results["vqa_img_compression_scores"] = eval_vqa_compressed.get(
+                "vqa_score", []
             )
             print(
                 f"Compressed Quality (k={processing_strategy.k}): {results['compressed_quality']:.4f}"
@@ -178,7 +197,9 @@ class ScoreEvaluator:
             f"--- Calculating Similarity/Reward using: {type(self.similarity_reward_strategy).__name__} ---"
         )
         similarity_reward_score = self.similarity_reward_strategy.calculate(
-            image=bitmap,  # Hoặc image_submit tùy bạn muốn đánh giá ảnh nào
+            image=self._apply_image_procession(
+                svg_to_png(svg_code=svg_content)
+            ),  # Hoặc image_submit tùy bạn muốn đánh giá ảnh nào
             description=description,  # Cần cho CLIP
         )
         # Lưu kết quả (có thể là None)
@@ -244,11 +265,19 @@ class ScoreEvaluator:
 
         # Lưu ảnh đã nén (nếu có)
         if (
-            isinstance(processing_strategy, CompressionStrategy)
+            isinstance(processing_strategy, VtracerCompressionStrategy)
             and compressed_quality is not None
         ):
+            vqa_compression_str = " ".join(
+                f"{s:.2f}" for s in evaluation_results["vqa_img_compression_scores"]
+            )
+            char_compression_str = (
+                f"Text: {evaluation_results['num_char_img_compression']}"
+            )
+
             captioned_processed = add_caption_to_image(
-                processed_image, [description, k_value]
+                processed_image,
+                [description, k_value, vqa_compression_str, char_compression_str],
             )
             save_path = os.path.join(
                 id_folder,
@@ -311,13 +340,13 @@ class ScoreEvaluator:
         current_val_score = harmonic_mean(
             round(current_eval_results["text_alignment_score"], 3),
             round(current_eval_results["aesthetic_score"], 3),
-            1.0,
-        )
+            0.5,
+        ) * current_eval_results["ocr_score"]
         best_val_score = harmonic_mean(
             round(best_scores_tracking["best_text_alignment_score"], 3),
             round(best_scores_tracking["best_aesthetic_score"], 3),
-            1.0,
-        )
+            0.5,
+        ) * best_scores_tracking["best_ocr_score"]
         print(
             f"Best Score: {best_scores_tracking['best_text_alignment_score']:.3f} - {best_scores_tracking['best_aesthetic_score']:.3f} - total: {best_val_score:.3f}"
         )
@@ -328,6 +357,7 @@ class ScoreEvaluator:
             # current_total > best_scores_tracking["best_total_score"]
             # current_eval_results['text_alignment_score'] > best_scores_tracking["best_text_alignment_score"]
             # and current_eval_results['aesthetic_score'] > best_scores_tracking["best_aesthetic_score"]
+            # current_eval_results['aesthetic_score'] > best_scores_tracking["best_aesthetic_score"]
             current_val_score > best_val_score
         ):
             best_scores_tracking["best_total_score"] = current_total
@@ -443,6 +473,7 @@ class ScoreEvaluator:
         # --- Chọn và khởi tạo Strategy ---
         if use_image_compression:
             # !!! Tạo CompressionStrategy với tham số k !!!
+            # processing_strategy = VtracerCompressionStrategy(k=compression_k)
             processing_strategy = CompressionStrategy(k=compression_k)
         else:
             processing_strategy = NoCompressionStrategy()
