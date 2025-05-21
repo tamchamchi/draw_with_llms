@@ -130,6 +130,7 @@ def main():
     )
 
     # --- Tham số ghi đè SVG config (như cũ) ---
+    parser.add_argument("--image_to_svg", type=str, default="contour", choices=["contour", "vtracer"])
     parser.add_argument("--svg_num_colors", type=int, default=None)
     # ... (giữ nguyên các args svg_max_bytes, svg_resize, svg_target_w/h, svg_adaptive_fill) ...
     parser.add_argument("--svg_max_bytes", type=int, default=None)
@@ -224,6 +225,7 @@ def main():
             data,
             prompt_builder,
             similarity_reward_strategy,
+            image_to_svg=args.image_to_svg
         )
     except Exception as e:
         print(f"Lỗi khởi tạo ScoreEvaluator: {e}")

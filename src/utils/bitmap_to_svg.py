@@ -24,7 +24,7 @@ def add_ocr_decoy_svg(svg_code: str) -> str:
     """
     import random
     import re
-    from colorsys import rgb_to_hls, hls_to_rgb
+    from colorsys import rgb_to_hls
 
     # Check if SVG has a closing tag
     if "</svg>" not in svg_code:
@@ -408,8 +408,8 @@ def extract_features_by_scale(img_np, num_colors=16):
         for contour in contours:
             # Skip tiny contours
             area = cv2.contourArea(contour)
-            # if area < 10:
-            #     continue
+            if area < 20:
+                continue
 
             # Calculate contour center
             m = cv2.moments(contour)
@@ -432,7 +432,8 @@ def extract_features_by_scale(img_np, num_colors=16):
             points = " ".join([f"{pt[0][0]:.1f},{pt[0][1]:.1f}" for pt in approx])
 
             # Calculate importance (area, proximity to center, complexity)
-            importance = area * (1 - dist_from_center) * (1 / (len(approx) + 1))
+            # importance = area * (1 - dist_from_center) * (1 / (len(approx) + 1))
+            importance = 0.5 * area + 0.3 * (1 - dist_from_center) + 0.2 * len(approx)
 
             color_features.append(
                 {

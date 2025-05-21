@@ -39,6 +39,7 @@ class ScoreEvaluator:
         data: Data,
         prompt_builder: PromptBuildingStrategy,
         similarity_reward_strategy: SimilarityRewardStrategy,
+        image_to_svg: str = "contour",
         seed: int = 42,
     ):
         # Dependency Injection
@@ -49,6 +50,7 @@ class ScoreEvaluator:
         self.prompt_builder = prompt_builder
         self.similarity_reward_strategy = similarity_reward_strategy
         self._set_random_seed(seed)
+        self.image_to_svg = image_to_svg
 
     def _set_random_seed(self, seed: int = 42) -> None:
         """Set up random seeds for libraries."""
@@ -122,15 +124,19 @@ class ScoreEvaluator:
 
     def _convert_to_svg(self, processed_image: Image.Image, **kwargs) -> str:
         print("--- Template Step: Convert to SVG ---")
-        return bitmap_to_svg_layered(
-            image=processed_image,
-            max_size_bytes=kwargs.get("max_size_bytes", 9800),
-            resize=kwargs.get("resize", True),
-            target_size=kwargs.get("target_size", (384, 384)),
-            adaptive_fill=kwargs.get("adaptive_fill", True),
-            num_colors=kwargs.get("num_colors", 12),
-        )
-        # return image_to_svg(processed_image)
+        if self.image_to_svg == "contour":
+            print("--- Convert to SVG by Contour ---")
+            return bitmap_to_svg_layered(
+                image=processed_image,
+                max_size_bytes=kwargs.get("max_size_bytes", 9800),
+                resize=kwargs.get("resize", True),
+                target_size=kwargs.get("target_size", (384, 384)),
+                adaptive_fill=kwargs.get("adaptive_fill", True),
+                num_colors=kwargs.get("num_colors", 12),
+            )
+        elif self.image_to_svg == "vtracer":
+            print("--- Convert to SVG by Vtracer ---")
+            return image_to_svg(processed_image)
 
     def _evaluate_results(
         self,
@@ -340,12 +346,10 @@ class ScoreEvaluator:
         current_val_score = harmonic_mean(
             round(current_eval_results["text_alignment_score"], 3),
             round(current_eval_results["aesthetic_score"], 3),
-            0.5,
         ) * current_eval_results["ocr_score"]
         best_val_score = harmonic_mean(
             round(best_scores_tracking["best_text_alignment_score"], 3),
             round(best_scores_tracking["best_aesthetic_score"], 3),
-            0.5,
         ) * best_scores_tracking["best_ocr_score"]
         print(
             f"Best Score: {best_scores_tracking['best_text_alignment_score']:.3f} - {best_scores_tracking['best_aesthetic_score']:.3f} - total: {best_val_score:.3f}"

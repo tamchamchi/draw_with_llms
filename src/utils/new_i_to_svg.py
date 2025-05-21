@@ -1,12 +1,11 @@
-import xml.etree.ElementTree as ET
-import cv2
-import numpy as np
-from io import BytesIO
-from PIL import Image
-import vtracer
 import re
+import xml.etree.ElementTree as ET
+from io import BytesIO
 from itertools import product
 
+import vtracer
+from PIL import Image
+from scour import scour
 
 default_svg = """<svg width="256" height="256" viewBox="0 0 256 256"><circle cx="50" cy="50" r="40" fill="red" /></svg>"""
 
@@ -41,8 +40,7 @@ def add_ocr_decoy_svg(svg_code: str) -> str:
         Modified SVG with the nested circles added
     """
     import random
-    import re
-    from colorsys import rgb_to_hls, hls_to_rgb
+    from colorsys import rgb_to_hls
 
     # Check if SVG has a closing tag
     if "</svg>" not in svg_code:
@@ -229,9 +227,12 @@ def image_to_svg(image: Image, max_size: int = 9800) -> str:
     resized_img = image.resize((384, 384), Image.Resampling.LANCZOS)
     pixels = list(resized_img.getdata())
 
-    speckle_values = [4, 10, 20, 30, 40]
+    # speckle_values = [20, 40, 60]
+    # layer_diff_values = [64, 124]
+    # color_precision_values = [4, 6, 8]
+    speckle_values = [10, 40, 60]
     layer_diff_values = [64, 124]
-    color_precision_values = [5, 6, 8]
+    color_precision_values = [4, 6, 8]
 
     best_svg = None
     best_params = {}
@@ -254,20 +255,32 @@ def image_to_svg(image: Image, max_size: int = 9800) -> str:
             path_precision=8,   # default: 8
         )
 
-        byte_len = len(svg_str.encode("utf-8"))
+        options = scour.sanitizeOptions({
+            'enable_comment_stripping': True,
+            'remove_metadata': True,
+            'remove_descriptions': True,
+            'set_precision': 1,
+            'remove_descriptive_elements': True,
+            'strip_xml_prolog': True
+        })
+
+        add_o = add_ocr_decoy_svg(svg_str)
+        optimized_svg = scour.scourString(add_o, options)
+        byte_len = len(optimized_svg.encode("utf-8"))
+        
         if byte_len <= max_size and byte_len > best_size:
-            best_svg = remove_version_attribute(svg_str)
+            best_svg = remove_version_attribute(optimized_svg)
+            best_svg = re.sub(r"<\?xml[^>]+\?>\s*", "", best_svg)
             best_params = {
                 "filter_speckle": filter_speckle,
                 "layer_difference": layer_difference,
                 "color_precision": color_precision
             }
             best_size = byte_len
-        print(f"{best_params}")
+    print(f"{best_params}")
 
     if best_svg:
-        modified_svg = add_ocr_decoy_svg(best_svg)
-        return modified_svg
+        return best_svg
     else:
         return default_svg
 

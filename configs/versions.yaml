@@ -82,7 +82,7 @@ version_4: # submit-score = 0.574
   id_prompt: 1
   method: "I->SVG + CLIP + Text_Insert + Aesthetic"   
   model: "StableDiffusionV2"  
-  prefix_prompt: "vector art, "
+  prefix_prompt: "vector art,"
   suffix_prompt: ",inspired by Chris Ware, Patrick Caulfield, featured on pixabay, pop art, amazing splashscreen artwork, sticker - art, app icon"
   negative_prompt: ""
   version_description: "version_4"
@@ -103,26 +103,28 @@ version_4: # submit-score = 0.574
     target_size: [384, 384]
     adaptive_fill: true
     num_colors: 12
-
-version_5:
+#digital art, {prompt}, inspired by Buckminster Fuller, behance, digital art, polyhedral, geometric tesseract, impossible geometry
+version_5: 
   id_prompt: 1
-  method: "I->SVG"   
+  method: "I->SVG + CLIP + Text_Insert + Aesthetic"   
   model: "StableDiffusionV2"  
-  prefix_prompt: "Simple, classic image of"
-  suffix_prompt: "with flat color blocks, high contrast,beautiful, minimal details, solid colors only"
-  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
-  version_description: "version_5"
+  prefix_prompt: "vector art,"
+  suffix_prompt: ",inspired by Petros Afshar, Chris Ware, Patrick Caulfield, flat 2D design, graphic templates, geometric abstract art, geometric patterns, stylized layered shapes, stylised flat colors, app icon"
+  negative_prompt: ""
+  version_description: "version_4"
   height: 768
   width: 768
-  num_inference_steps: 25
-  guidance_scale: 15.0
-  use_image_compression: true
+  num_inference_steps: 35
+  guidance_scale: 15
+  use_image_compression: false
+  use_prompt_builder: false
+  similarity_strategy: clip
   k: 8
   num_attempts: 1
   verbose: true
   random_seed: 42
   bitmap2svg_config:
-    max_size_bytes: 9900
+    max_size_bytes: 9800
     resize: true
     target_size: [384, 384]
     adaptive_fill: true
