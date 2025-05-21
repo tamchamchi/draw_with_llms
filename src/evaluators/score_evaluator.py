@@ -343,14 +343,22 @@ class ScoreEvaluator:
         # ... (Logic cập nhật điểm như code trước) ...
         current_total = current_eval_results["total_score"]
         is_better = False
-        current_val_score = harmonic_mean(
-            round(current_eval_results["text_alignment_score"], 3),
-            round(current_eval_results["aesthetic_score"], 3),
-        ) * current_eval_results["ocr_score"]
-        best_val_score = harmonic_mean(
-            round(best_scores_tracking["best_text_alignment_score"], 3),
-            round(best_scores_tracking["best_aesthetic_score"], 3),
-        ) * best_scores_tracking["best_ocr_score"]
+        current_val_score = (
+            harmonic_mean(
+                round(current_eval_results["text_alignment_score"], 3),
+                round(current_eval_results["aesthetic_score"], 3),
+                beta=0.5,
+            )
+            * current_eval_results["ocr_score"]
+        )
+        best_val_score = (
+            harmonic_mean(
+                round(best_scores_tracking["best_text_alignment_score"], 3),
+                round(best_scores_tracking["best_aesthetic_score"], 3),
+                beta=0.5,
+            )
+            * best_scores_tracking["best_ocr_score"]
+        )
         print(
             f"Best Score: {best_scores_tracking['best_text_alignment_score']:.3f} - {best_scores_tracking['best_aesthetic_score']:.3f} - total: {best_val_score:.3f}"
         )

@@ -227,12 +227,12 @@ def image_to_svg(image: Image, max_size: int = 9800) -> str:
     resized_img = image.resize((384, 384), Image.Resampling.LANCZOS)
     pixels = list(resized_img.getdata())
 
-    # speckle_values = [20, 40, 60]
-    # layer_diff_values = [64, 124]
-    # color_precision_values = [4, 6, 8]
-    speckle_values = [10, 40, 60]
+    speckle_values = [20, 40, 60]
     layer_diff_values = [64, 124]
     color_precision_values = [4, 6, 8]
+    # speckle_values = [10, 40, 60]
+    # layer_diff_values = [64, 124]
+    # color_precision_values = [4, 6, 8]
 
     best_svg = None
     best_params = {}
