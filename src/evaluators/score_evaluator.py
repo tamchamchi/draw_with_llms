@@ -136,7 +136,7 @@ class ScoreEvaluator:
             )
         elif self.image_to_svg == "vtracer":
             print("--- Convert to SVG by Vtracer ---")
-            return image_to_svg(processed_image)
+            return image_to_svg(processed_image, max_size=10000)
 
     def _evaluate_results(
         self,
