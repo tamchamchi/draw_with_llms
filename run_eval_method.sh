@@ -382,6 +382,133 @@
 #    > report/score_version_4_sdxl_turbo_04.txt
 # echo "Complete!!!"
 
+# echo "Running version 4_05 with sdxl_turbo..."
+# python src/scripts/run_evaluation.py\
+#  --version version_4\
+#   --output_json data/results/score/json/version_4_sdxl_turbo_05.json\
+#   --method "I->SVG + Yes-No + Text_Insert + Aesthetic + New I->SVG"\
+#   --output_version_name version_4_sdxl_turbo_05\
+#   --image_to_svg "vtracer"\
+#   --model SDXL-Turbo\
+#   --num_inference_steps 1\
+#   --guidance_scale 0\
+#   --similarity_strategy yes-no\
+#   --height 512\
+#   --width 512\
+#   --svg_target_w 384\
+#   --svg_target_h 384\
+#   --num_attempts 7\
+#   --svg_num_colors 12\
+#    > report/score_version_4_sdxl_turbo_05.txt
+# echo "Complete!!!"
+
+# echo "Running version 4_06 with sdxl_turbo..."
+# python src/scripts/run_evaluation.py\
+#  --version version_4\
+#   --output_json data/results/score/json/version_4_sdxl_turbo_06.json\
+#   --method "I->SVG + Yes-No + Text_Insert + Aesthetic + Old I->SVG"\
+#   --output_version_name version_4_sdxl_turbo_06\
+#   --image_to_svg "contour"\
+#   --model SDXL-Turbo\
+#   --num_inference_steps 1\
+#   --guidance_scale 0\
+#   --similarity_strategy yes-no\
+#   --height 512\
+#   --width 512\
+#   --svg_target_w 384\
+#   --svg_target_h 384\
+#   --num_attempts 7\
+#   --svg_num_colors 6\
+#    > report/score_version_4_sdxl_turbo_06.txt
+# echo "Complete!!!"
+
+# echo "Running version 4_07 with sdxl_turbo..."
+# python src/scripts/run_evaluation.py\
+#  --version version_4\
+#   --output_json data/results/score/json/version_4_sdxl_turbo_07.json\
+#   --method "I->KMean->SVG + Yes-No + Text_Insert + Aesthetic + New I->SVG"\
+#   --output_version_name version_4_sdxl_turbo_07\
+#   --image_to_svg "vtracer"\
+#   --model SDXL-Turbo\
+#   --use_image_compression \
+#   --k 8\
+#   --num_inference_steps 1\
+#   --guidance_scale 0\
+#   --similarity_strategy yes-no\
+#   --height 512\
+#   --width 512\
+#   --svg_target_w 384\
+#   --svg_target_h 384\
+#   --num_attempts 7\
+#   --svg_num_colors 12\
+#    > report/score_version_4_sdxl_turbo_07.txt
+# echo "Complete!!!"
+
+# echo "Running version 5_07 with sdxl_turbo..."
+# python src/scripts/run_evaluation.py\
+#  --version version_5\
+#   --output_json data/results/score/json/version_5_sdxl_turbo_07.json\
+#   --method "I->KMean->SVG + Yes-No + Text_Insert + Aesthetic + New I->SVG"\
+#   --output_version_name version_5_sdxl_turbo_07\
+#   --image_to_svg "vtracer"\
+#   --model SDXL-Turbo\
+#   --use_image_compression \
+#   --k 8\
+#   --num_inference_steps 1\
+#   --guidance_scale 0\
+#   --similarity_strategy yes-no\
+#   --height 512\
+#   --width 512\
+#   --svg_target_w 384\
+#   --svg_target_h 384\
+#   --num_attempts 7\
+#   --svg_num_colors 12\
+#    > report/score_version_5_sdxl_turbo_07.txt
+# echo "Complete!!!"
+
+# echo "Running version 6_07 with sdxl_turbo..."
+# python src/scripts/run_evaluation.py\
+#  --version version_6\
+#   --output_json data/results/score/json/version_6_sdxl_turbo_07.json\
+#   --method "I->KMean->SVG + Yes-No + Text_Insert + Aesthetic + New I->SVG"\
+#   --output_version_name version_6_sdxl_turbo_07\
+#   --image_to_svg "vtracer"\
+#   --model SDXL-Turbo\
+#   --use_image_compression \
+#   --k 8\
+#   --num_inference_steps 1\
+#   --guidance_scale 0\
+#   --similarity_strategy yes-no\
+#   --height 512\
+#   --width 512\
+#   --svg_target_w 384\
+#   --svg_target_h 384\
+#   --num_attempts 7\
+#   --svg_num_colors 12\
+#    > report/score_version_6_sdxl_turbo_07.txt
+# echo "Complete!!!"
+
+
+echo "Running version 4_08 with sdxl_turbo..."
+python src/scripts/run_evaluation.py\
+ --version version_4\
+  --output_json data/results/score/json/version_4_sdxl_turbo_08.json\
+  --method "I->SVG + Yes-No + Text_Insert + Aesthetic + New I->SVG"\
+  --output_version_name version_4_sdxl_turbo_08\
+  --image_to_svg "vtracer"\
+  --model SDXL-Turbo\
+  --num_inference_steps 1\
+  --guidance_scale 0\
+  --similarity_strategy yes-no\
+  --height 512\
+  --width 512\
+  --svg_target_w 384\
+  --svg_target_h 384\
+  --num_attempts 6\
+  --svg_num_colors 12\
+   > report/score_version_4_sdxl_turbo_08.txt
+echo "Complete!!!"
+
 echo "Running Report..."
 python src/scripts/generate_report.py\
  --json_dir data/results/score/json\

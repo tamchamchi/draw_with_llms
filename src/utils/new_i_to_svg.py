@@ -222,7 +222,7 @@ def add_ocr_decoy_svg(svg_code: str) -> str:
     return modified_svg
 
 
-def image_to_svg(image: Image, max_size: int = 9800) -> str:
+def image_to_svg(image: Image, max_size: int = 10000) -> str:
     image = image.convert("RGBA")
     resized_img = image.resize((384, 384), Image.Resampling.LANCZOS)
     pixels = list(resized_img.getdata())

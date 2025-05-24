@@ -66,44 +66,27 @@ def add_caption_to_image(image_pil: Image.Image, caption: List[str]) -> Image.Im
     return Image.fromarray(cv2.cvtColor(new_image, cv2.COLOR_BGR2RGB))
 
 
-def image_compression(image_input, k=6):
-    """
-    Compress an image using the K-Means clustering algorithm.
+def image_compression(image, k=8):
+    # Chuyển ảnh PIL → NumPy (RGB → BGR để phù hợp với OpenCV)
+    img_np = np.array(image.convert("RGB"))[:, :, ::-1]
 
-    Parameters:
-        image_input (str or numpy array or PIL.Image): Path to the input image, an image array, or a PIL image.
-        k (int): Number of color clusters (default is 8).
+    # Đưa về dạng (num_pixels, 3)
+    pixels = img_np.reshape(-1, 3).astype(np.float32)
 
-    Returns:
-        compressed_image (PIL.Image.Image): The compressed image in PIL format.
-    """
-    # Check if input is a file path (string), PIL image or numpy array
-    if isinstance(image_input, str):
-        image = cv2.imread(image_input)
-        # Convert from BGR to RGB
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    elif isinstance(image_input, Image.Image):  # If input is a PIL image
-        image = np.array(image_input)  # Convert PIL image to NumPy array
-    else:
-        image = image_input  # If input is already a NumPy array
+    # KMeans clustering
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 1.0)
+    _, labels, centers = cv2.kmeans(
+        data=pixels,
+        K=k,
+        bestLabels=None,
+        criteria=criteria,
+        attempts=10,
+        flags=cv2.KMEANS_PP_CENTERS
+    )
 
-    # Ensure image is in RGB format
-    # If the image has alpha channel (RGBA)
-    if image.ndim == 3 and image.shape[2] == 4:
-        image = image[:, :, :3]  # Remove alpha channel to get RGB
+    # Gán màu theo cluster
+    quantized = centers[labels.flatten()].reshape(img_np.shape).astype(np.uint8)
 
-    # Reshape the image into a 2D array (num_pixels, 3)
-    pixels = image.reshape((-1, 3))
-
-    # Apply K-Means clustering
-    kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
-    kmeans.fit(pixels)
-
-    # Replace each pixel with the color of its nearest cluster center
-    compressed_pixels = kmeans.cluster_centers_[kmeans.labels_]
-    compressed_image = compressed_pixels.reshape(image.shape).astype(np.uint8)
-
-    # Convert the result back to PIL.Image
-    compressed_image_pil = Image.fromarray(compressed_image)
-
-    return compressed_image_pil
+    # Chuyển lại từ BGR → RGB → PIL Image
+    quantized_rgb = quantized[:, :, ::-1]
+    return Image.fromarray(quantized_rgb)

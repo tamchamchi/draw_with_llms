@@ -158,12 +158,12 @@ version_6:
 
 version_7:
   id_prompt: 1
-  method: "I->SVG + CLIP + Text_Insert + Aesthetic"   
+  method: "I->KMean->SVG + CLIP + Text_Insert"   
   model: "StableDiffusionV2"  
   prefix_prompt: "vector art,"
-  suffix_prompt: ",inspired by Chris Ware, Patrick Caulfield, featured on pixabay, pop art, amazing splashscreen artwork, sticker - art, app icon"
-  negative_prompt: ""
-  version_description: "version_4"
+  suffix_prompt: "inspired by Chris Ware, Patrick Caulfield, featured on pixabay, pop art, amazing splashscreen artwork, sticker - art, app icon."
+  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
+  version_description: "version_6"
   height: 768
   width: 768
   num_inference_steps: 35
@@ -181,6 +181,7 @@ version_7:
     target_size: [384, 384]
     adaptive_fill: true
     num_colors: 12
+
     
 version_8:
   id_prompt: 1

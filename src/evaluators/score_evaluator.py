@@ -271,7 +271,7 @@ class ScoreEvaluator:
 
         # Lưu ảnh đã nén (nếu có)
         if (
-            isinstance(processing_strategy, VtracerCompressionStrategy)
+            isinstance(processing_strategy, CompressionStrategy)
             and compressed_quality is not None
         ):
             vqa_compression_str = " ".join(
