@@ -32,10 +32,16 @@
   Processing version_6_sdxl_turbo_07.json (list of 15 items)...
   Processing version_7_sdxl_turbo_00.json (list of 15 items)...
   Processing version_7_sdxl_turbo_01.json (list of 15 items)...
+  Processing version_7_sdxl_turbo_02.json (list of 15 items)...
+  Processing version_7_sdxl_turbo_03.json (list of 15 items)...
+  Processing version_7_sdxl_turbo_04.json (list of 15 items)...
+  Processing version_7_sdxl_turbo_05.json (list of 15 items)...
+  Processing version_7_sdxl_turbo_06.json (list of 15 items)...
 +------------------------------+-------------------+-----------------+------------------+-----------------------+------------------------+-----------------+----------------------------+------------+
 | filename                     |   avg_total_score |   avg_vqa_score |   avg_vqa_origin |   avg_aesthetic_score |   avg_aesthetic_origin |   avg_ocr_score |   avg_text_alignment_score |   avg_size |
 |------------------------------+-------------------+-----------------+------------------+-----------------------+------------------------+-----------------+----------------------------+------------|
 | version_1_sdv2_00.json       |            0.7031 |          0.8032 |           0.7991 |                0.4806 |                 0.5879 |          1.0000 |                     0.5880 |  9957.0667 |
+| version_7_sdxl_turbo_05.json |            0.6972 |          0.7810 |           0.7881 |                0.5024 |                 0.5739 |          1.0000 |                     0.6963 |  8655.6000 |
 | version_6_sdxl_turbo_01.json |            0.6920 |          0.7794 |           0.7992 |                0.4969 |                 0.6322 |          1.0000 |                     0.6143 |  8701.5333 |
 | version_2_sdv2_00.json       |            0.6913 |          0.7849 |           0.7738 |                0.4824 |                 0.5873 |          1.0000 |                     0.6016 |  9955.0667 |
 | version_7_sdxl_turbo_00.json |            0.6902 |          0.7705 |           0.7863 |                0.5035 |                 0.5730 |          1.0000 |                     0.6955 |  8655.6000 |
@@ -43,9 +49,13 @@
 | version_4_sdxl_turbo_15.json |            0.6873 |          0.7838 |           0.7718 |                0.4716 |                 0.5800 |          1.0000 |                     0.6703 |  9788.4667 |
 | version_2_sdv2_01.json       |            0.6872 |          0.7741 |           0.7816 |                0.4868 |                 0.5913 |          1.0000 |                     0.5956 |  8841.8667 |
 | version_6_sdxl_turbo_00.json |            0.6866 |          0.7826 |           0.8012 |                0.4842 |                 0.6488 |          1.0000 |                     0.5586 |  9946.4000 |
+| version_7_sdxl_turbo_04.json |            0.6840 |          0.7698 |           0.7727 |                0.4975 |                 0.5699 |          1.0000 |                     0.6931 |  9954.3333 |
 | version_4_sdxl_turbo_04.json |            0.6838 |          0.7779 |           0.7650 |                0.4772 |                 0.5664 |          1.0000 |                     0.6855 |  8914.4667 |
+| version_7_sdxl_turbo_06.json |            0.6828 |          0.7621 |           0.7676 |                0.5059 |                 0.5765 |          1.0000 |                     0.7000 |  8799.2000 |
 | version_7_sdxl_turbo_01.json |            0.6828 |          0.7621 |           0.7676 |                0.5058 |                 0.5765 |          1.0000 |                     0.6996 |  8799.2000 |
+| version_7_sdxl_turbo_02.json |            0.6800 |          0.7570 |           0.8168 |                0.5011 |                 0.5699 |          1.0000 |                     0.6950 |  9632.6667 |
 | version_1_sdv2_02.json       |            0.6794 |          0.7736 |           0.7532 |                0.4708 |                 0.5915 |          1.0000 |                     0.6447 |  9060.7333 |
+| version_7_sdxl_turbo_03.json |            0.6783 |          0.7548 |           0.7919 |                0.4995 |                 0.5724 |          1.0000 |                     0.6982 |  9950.9333 |
 | version_3_sdv2_00.json       |            0.6743 |          0.7544 |           0.8012 |                0.4884 |                 0.5917 |          1.0000 |                     0.6099 |  9951.4000 |
 | version_4_sdxl_turbo_05.json |            0.6733 |          0.7624 |           0.7555 |                0.4751 |                 0.5705 |          1.0000 |                     0.6794 |  9118.1333 |
 | version_4_sdxl_turbo_02.json |            0.6708 |          0.7577 |           0.7686 |                0.4752 |                 0.5739 |          1.0000 |                     0.6718 |  8867.2000 |
@@ -76,7 +86,8 @@ Lưu thành công.
 | ('I->KMean->SVG + Yes-No + Text_Insert + Aesthetic + New I->SVG', 'SDXL-Turbo') |        0.6555 |      0.7377 |       0.7898 |            0.4742 |             0.5910 |      1.0000 |
 | ('I->SVG + Yes-No + Text_Insert + Aesthetic + New I->SVG', 'SDXL-Turbo')        |        0.6735 |      0.7612 |       0.7802 |            0.4806 |             0.5760 |      1.0000 |
 | ('I->SVG + Yes-No + Text_Insert + Aesthetic + New I->SVG', 'StableDiffusionV2') |        0.6799 |      0.7700 |       0.7838 |            0.4773 |             0.5902 |      1.0000 |
-| ('I->SVG + Yes-No + Text_Insert + Aesthetic + Old I->SVG', 'SDXL-Turbo')        |        0.6668 |      0.7559 |       0.7916 |            0.4728 |             0.5842 |      1.0000 |
+| ('I->SVG + Yes-No + Text_Insert + Aesthetic + New I->SVG(1)', 'SDXL-Turbo')     |        0.6900 |      0.7715 |       0.7778 |            0.5041 |             0.5752 |      1.0000 |
+| ('I->SVG + Yes-No + Text_Insert + Aesthetic + Old I->SVG', 'SDXL-Turbo')        |        0.6710 |      0.7573 |       0.7923 |            0.4808 |             0.5801 |      1.0000 |
 | ('I->SVG + Yes-No + Text_Insert + Aesthetic + Old I->SVG', 'StableDiffusionV2') |        0.6896 |      0.7808 |       0.7914 |            0.4838 |             0.5890 |      1.0000 |
 +---------------------------------------------------------------------------------+---------------+-------------+--------------+-------------------+--------------------+-------------+
 

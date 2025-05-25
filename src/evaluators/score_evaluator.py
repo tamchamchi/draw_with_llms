@@ -21,7 +21,8 @@ from ..strategies.image_processing.compression import CompressionStrategy
 from ..strategies.image_processing.no_compression import NoCompressionStrategy
 from ..strategies.image_processing.vtracer import VtracerCompressionStrategy
 from ..utils.bitmap_to_svg import bitmap_to_svg_layered
-from ..utils.new_i_to_svg import image_to_svg
+from ..utils.image_to_svg_00 import image_to_svg
+from ..utils.image_to_svg_01 import image_to_svg
 
 # from ..utils.image_to_svg import bitmap_to_svg_layered
 from ..utils.formatting_utils import naming_template, score_caption
@@ -136,6 +137,9 @@ class ScoreEvaluator:
             )
         elif self.image_to_svg == "vtracer":
             print("--- Convert to SVG by Vtracer ---")
+            return image_to_svg(processed_image, max_size=10000)
+        elif self.image_to_svg == "vtracer+ssim":
+            print("--- Convert to SVG by Vtracer + SSIM ---")
             return image_to_svg(processed_image, max_size=10000)
 
     def _evaluate_results(

@@ -2,13 +2,67 @@ import re
 import xml.etree.ElementTree as ET
 from io import BytesIO
 from itertools import product
+import numpy as np
+import cairosvg
+import io
 
 import vtracer
 from PIL import Image
 from scour import scour
+from skimage.metrics import structural_similarity as ssim
 
 default_svg = """<svg width="256" height="256" viewBox="0 0 256 256"><circle cx="50" cy="50" r="40" fill="red" /></svg>"""
 
+def svg_to_png(svg_code: str, size: tuple = (384, 384)) -> Image.Image:
+    """
+    Converts an SVG string to a PNG image using CairoSVG.
+
+    If the SVG does not define a `viewBox`, it will add one using the provided size.
+
+    Parameters
+    ----------
+    svg_code : str
+         The SVG string to convert.
+    size : tuple[int, int], default=(384, 384)
+         The desired size of the output PNG image (width, height).
+
+    Returns
+    -------
+    PIL.Image.Image
+         The generated PNG image.
+    """
+    # Ensure SVG has proper size attributes
+    if "viewBox" not in svg_code:
+        svg_code = svg_code.replace("<svg", f'<svg viewBox="0 0 {size[0]} {size[1]}"')
+
+    # Convert SVG to PNG
+    png_data = cairosvg.svg2png(bytestring=svg_code.encode("utf-8"))
+    return Image.open(io.BytesIO(png_data)).convert("RGB").resize(size)
+
+def compare_pil_images(img1: Image.Image, img2: Image.Image, size=(384, 384)):
+    """
+    So sánh hai ảnh PIL sau khi resize về kích thước cố định bằng SSIM và MSE.
+    
+    Parameters:
+        img1 (PIL.Image.Image): Ảnh thứ nhất.
+        img2 (PIL.Image.Image): Ảnh thứ hai.
+        size (tuple): Kích thước resize (mặc định: 384x384).
+    
+    Returns:
+        dict: {'ssim': ..., 'mse': ...}
+    """
+    # Resize và chuyển về grayscale
+    img1_gray = img1.resize(size, Image.Resampling.LANCZOS).convert('L')
+    img2_gray = img2.resize(size, Image.Resampling.LANCZOS).convert('L')
+
+    # Chuyển sang mảng numpy
+    arr1 = np.array(img1_gray)
+    arr2 = np.array(img2_gray)
+
+    # Tính SSIM
+    score_ssim, _ = ssim(arr1, arr2, full=True)
+
+    return score_ssim
 
 def remove_version_attribute(svg_str: str) -> str:
     ET.register_namespace("", "http://www.w3.org/2000/svg")
@@ -223,8 +277,8 @@ def add_ocr_decoy_svg(svg_code: str) -> str:
 
 
 def image_to_svg(image: Image, max_size: int = 10000) -> str:
-    image = image.convert("RGBA")
-    resized_img = image.resize((384, 384), Image.Resampling.LANCZOS)
+    image_rgb = image.convert("RGBA")
+    resized_img = image_rgb.resize((384, 384), Image.Resampling.LANCZOS)
     pixels = list(resized_img.getdata())
 
     speckle_values = [20, 40, 60]
@@ -236,6 +290,7 @@ def image_to_svg(image: Image, max_size: int = 10000) -> str:
 
     best_svg = None
     best_params = {}
+    best_similarity = 0.0
     best_size = 0  # theo dõi kích thước tốt nhất nhỏ hơn max_size
 
     for filter_speckle, layer_difference, color_precision in product(speckle_values, layer_diff_values, color_precision_values):
@@ -268,15 +323,19 @@ def image_to_svg(image: Image, max_size: int = 10000) -> str:
         optimized_svg = scour.scourString(add_o, options)
         byte_len = len(optimized_svg.encode("utf-8"))
         
+        ssim = compare_pil_images(image, svg_to_png(svg_str))
+        
         if byte_len <= max_size and byte_len > best_size:
-            best_svg = remove_version_attribute(optimized_svg)
-            best_svg = re.sub(r"<\?xml[^>]+\?>\s*", "", best_svg)
-            best_params = {
-                "filter_speckle": filter_speckle,
-                "layer_difference": layer_difference,
-                "color_precision": color_precision
-            }
-            best_size = byte_len
+            if best_similarity <= ssim:
+                best_svg = remove_version_attribute(optimized_svg)
+                best_svg = re.sub(r"<\?xml[^>]+\?>\s*", "", best_svg)
+                best_params = {
+                    "filter_speckle": filter_speckle,
+                    "layer_difference": layer_difference,
+                    "color_precision": color_precision,
+                    "ssim": ssim
+                }
+                best_size = byte_len
     print(f"{best_params}")
 
     if best_svg:
