@@ -155,15 +155,16 @@ version_6:
     target_size: [384, 384]
     adaptive_fill: true
     num_colors: 12
+#A stylized flat color illustration in the style of Tom Whalen, clean and colorful, vibrant palette, bold outlines, simple shapes. {description}, vector art, modern, playful.
 
 version_7:
   id_prompt: 1
-  method: "I->KMean->SVG + CLIP + Text_Insert"   
+  method: "I->SVG + CLIP + Text_Insert + Aesthetic"   
   model: "StableDiffusionV2"  
-  prefix_prompt: "vector art,"
-  suffix_prompt: "inspired by Chris Ware, Patrick Caulfield, featured on pixabay, pop art, amazing splashscreen artwork, sticker - art, app icon."
-  negative_prompt: "photorealistic, blurry, noisy, complex background, detailed texture, shadows, gradients"
-  version_description: "version_6"
+  prefix_prompt: "flat color illustration,"
+  suffix_prompt: ",inspired by Tom Whalen, vibrant palette, bold outlines, simple shapes, app icon."
+  negative_prompt: ""
+  version_description: "version_4"
   height: 768
   width: 768
   num_inference_steps: 35
