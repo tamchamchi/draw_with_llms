@@ -1,4 +1,5 @@
 #python 3.11.11
+multiprocess==0.70.18
 scour==0.38.2
 vtracer==0.6.11
 accelerate==1.6.0
