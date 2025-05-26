@@ -11,11 +11,6 @@ from PIL import Image
 from scour import scour
 from skimage.metrics import structural_similarity as ssim
 
-from multiprocess import Pool
-from itertools import product
-
-import time
-
 default_svg = """<svg width="256" height="256" viewBox="0 0 256 256"><circle cx="50" cy="50" r="40" fill="red" /></svg>"""
 
 def svg_to_png(svg_code: str, size: tuple = (384, 384)) -> Image.Image:
@@ -66,7 +61,6 @@ def compare_pil_images(img1: Image.Image, img2: Image.Image, size=(384, 384)):
 
     # Tính SSIM
     score_ssim, _ = ssim(arr1, arr2, full=True)
-    score_ssim = float(score_ssim)
 
     return score_ssim
 
@@ -281,106 +275,72 @@ def add_ocr_decoy_svg(svg_code: str) -> str:
 
     return modified_svg
 
-def process_combination(args):
-    params, img_bytes, image_size, max_size = args
-    filter_speckle, layer_difference, color_precision = params
-
-    img = Image.open(io.BytesIO(img_bytes)).convert("RGBA")
-    resized_img = img.resize((384, 384), Image.Resampling.LANCZOS)
-    pixels = list(resized_img.getdata())
-
-    svg_str = vtracer.convert_pixels_to_svg(
-        rgba_pixels=pixels,
-        size=image_size,
-        colormode="color",
-        hierarchical="stacked",
-        mode="polygon",
-        filter_speckle=filter_speckle,
-        color_precision=color_precision,
-        layer_difference=layer_difference,
-        corner_threshold=60,
-        length_threshold=4.0,
-        max_iterations=10,
-        splice_threshold=45,
-        path_precision=8,
-    )
-
-    options = scour.sanitizeOptions({
-        'enable_comment_stripping': True,
-        'remove_metadata': True,
-        'remove_descriptions': True,
-        'set_precision': 1,
-        'remove_descriptive_elements': True,
-        'strip_xml_prolog': True
-    })
-
-    add_o = add_ocr_decoy_svg(svg_str)
-    optimized_svg = scour.scourString(add_o, options)
-    byte_len = len(optimized_svg.encode("utf-8"))
-
-    ssim_score = compare_pil_images(img, svg_to_png(svg_str))
-
-    return {
-        "params": {
-            "filter_speckle": filter_speckle,
-            "layer_difference": layer_difference,
-            "color_precision": color_precision,
-            "ssim": ssim_score
-        },
-        "svg": re.sub(r"<\?xml[^>]+\?>\s*", "", remove_version_attribute(optimized_svg)),
-        "size": byte_len
-    }
 
 def image_to_svg(image: Image, max_size: int = 10000) -> str:
     image_rgb = image.convert("RGBA")
     resized_img = image_rgb.resize((384, 384), Image.Resampling.LANCZOS)
     pixels = list(resized_img.getdata())
-    image_size = resized_img.size
 
-    # Serialize image to bytes
-    img_bytes_io = io.BytesIO()
-    resized_img.save(img_bytes_io, format="PNG")
-    img_bytes = img_bytes_io.getvalue()
-
-    speckle_values = [10, 20, 40, 60]
-    layer_diff_values = [64, 128, 256]
-    color_precision_values = [4, 6, 8, 12]
-    param_combinations = list(product(speckle_values, layer_diff_values, color_precision_values))
-
-    args_list = [(params, img_bytes, image_size, max_size) for params in param_combinations]
+    speckle_values = [10, 20, 40]
+    layer_diff_values = [64, 128]
+    color_precision_values = [4, 5, 6, 8]
+    # speckle_values = [10, 40, 60]
+    # layer_diff_values = [64, 124]
+    # color_precision_values = [4, 6, 8]
 
     best_svg = None
     best_params = {}
     best_similarity = 0.0
-    best_size = 0
+    best_size = 0  # theo dõi kích thước tốt nhất nhỏ hơn max_size
+    best_aesthetic = 0.0
 
-    with Pool() as pool:
-        results = pool.map(process_combination, args_list)
+    for filter_speckle, layer_difference, color_precision in product(speckle_values, layer_diff_values, color_precision_values):
+        svg_str = vtracer.convert_pixels_to_svg(
+            rgba_pixels=pixels,
+            size=resized_img.size,
+            colormode="color",        # ["color"] or "binary"
+            hierarchical="stacked",     # ["stacked"] or "cutout"
+            mode="polygon",             # ["spline"], "polygon", "none"
+            filter_speckle=filter_speckle,   # default: 4
+            color_precision=color_precision,  # default: 6
+            layer_difference=layer_difference,  # default: 16
+            corner_threshold=60,  # default: 60
+            length_threshold=4.0,  # in [3.5, 10] default: 4.0
+            max_iterations=10,   # default: 10
+            splice_threshold=45,  # default: 45
+            path_precision=8,   # default: 8
+        )
 
-    for result in results:
-        size = result["size"]
-        ssim = result["params"]["ssim"]
-        if size <= max_size and size > best_size:
+        options = scour.sanitizeOptions({
+            'enable_comment_stripping': True,
+            'remove_metadata': True,
+            'remove_descriptions': True,
+            'set_precision': 1,
+            'remove_descriptive_elements': True,
+            'strip_xml_prolog': True
+        })
+
+        add_o = add_ocr_decoy_svg(svg_str)
+        optimized_svg = scour.scourString(add_o, options)
+        byte_len = len(optimized_svg.encode("utf-8"))
+
+        ssim = compare_pil_images(image, svg_to_png(svg_str))
+        
+        if byte_len <= max_size and byte_len > best_size:
             if best_similarity <= ssim:
                 best_similarity = ssim
-                best_svg = result["svg"]
-                best_params = result["params"]
-                best_size = size
-
+                best_svg = remove_version_attribute(optimized_svg)
+                best_svg = re.sub(r"<\?xml[^>]+\?>\s*", "", best_svg)
+                best_params = {
+                    "filter_speckle": filter_speckle,
+                    "layer_difference": layer_difference,
+                    "color_precision": color_precision,
+                    "ssim": ssim,
+                }
+                best_size = byte_len
     print(f"{best_params}")
 
     if best_svg:
         return best_svg
     else:
         return default_svg
-
-
-if __name__ == "__main__":
-    start = time.time()
-    image = Image.open(
-        "/home/anhndt/draw_with_llms/notebooks/a_snowy_plain_sdxl_turbo.png"
-    )
-    svg = image_to_svg(image)
-    end = time.time()
-    print(end - start)
-    print(type(svg))
