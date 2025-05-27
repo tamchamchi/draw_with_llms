@@ -283,7 +283,7 @@ def image_to_svg(image: Image, max_size: int = 10000) -> str:
 
     speckle_values = [10, 20, 40]
     layer_diff_values = [64, 128]
-    color_precision_values = [4, 5, 6, 8]
+    color_precision_values = [4, 5, 6]
     # speckle_values = [10, 40, 60]
     # layer_diff_values = [64, 124]
     # color_precision_values = [4, 6, 8]
